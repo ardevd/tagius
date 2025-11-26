@@ -27,18 +27,18 @@ object RetrofitClient {
     }
 
     private fun buildApiService(context: Context): TimeTaggerApiService {
-        // 1. Create dependencies
+
         val tokenManager = TokenManager(context)
         val authInterceptor = AuthInterceptor(tokenManager)
 
         val baseUrl = tokenManager.getServerUrl()
 
-        // 2. Create OkHttp Client with the dynamic interceptor
+
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .build()
 
-        // 3. Create Retrofit
+
         val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)

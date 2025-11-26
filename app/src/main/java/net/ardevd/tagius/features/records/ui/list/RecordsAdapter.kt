@@ -20,7 +20,6 @@ class RecordsAdapter(
     private val onStopClick: (TimeTaggerRecord) -> Unit
 ) : ListAdapter<TimeTaggerRecord, RecordsAdapter.RecordViewHolder>(DiffCallback) {
 
-    // Pass the callback to the ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
         val binding = ItemRecordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RecordViewHolder(binding, onStopClick)
@@ -35,7 +34,6 @@ class RecordsAdapter(
         private val onStopClick: (TimeTaggerRecord) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(record: TimeTaggerRecord) {
-            // 1. Set Texts
             binding.description.text = record.description.ifEmpty { "No Description" }
 
             val date = record.startTime.toReadableDate()

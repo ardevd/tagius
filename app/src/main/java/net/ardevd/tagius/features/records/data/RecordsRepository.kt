@@ -36,21 +36,17 @@ class RecordsRepository(service: TimeTaggerApiService) {
     }
 
     suspend fun stopRecord(record: TimeTaggerRecord): Boolean {
-        // 1. Calculate "Now" in Unix seconds
         val now = System.currentTimeMillis() / 1000
 
-        // 2. Create a copy of the record with updated timestamps
-        // We update 't2' to stop it, and 'mt' to mark it as modified.
         val updatedRecord = record.copy(
             endTime = now,
             modifiedTime = now
         )
 
         return try {
-            // 3. Send it to the API (wrapped in a list)
+
             val response = apiService.updateRecords(listOf(updatedRecord))
 
-            // 4. Return true if our record key is in the 'accepted' list
             response.accepted.contains(record.key)
         } catch (e: Exception) {
             e.printStackTrace()

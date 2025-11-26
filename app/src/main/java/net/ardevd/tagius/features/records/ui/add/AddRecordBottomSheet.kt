@@ -8,7 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import net.ardevd.tagius.databinding.FragmentAddRecordBinding
 
 class AddRecordBottomSheet(
-    private val onStartTimer: (String) -> Unit // Callback with description
+    private val onStartTimer: (String) -> Unit
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentAddRecordBinding? = null

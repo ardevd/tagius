@@ -27,19 +27,15 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     private val binding get() = _binding!!
 
-    // UPDATED: We create the dependencies here manually
+
     private val viewModel: RecordsViewModel by viewModels {
-        // 1. Create the API Service (Singleton)
         val apiService = RetrofitClient.getInstance(requireContext())
-        // 2. Create the Repository
         val repository =
-            RecordsRepository(apiService) // Assuming you updated Repository to take apiService
-        // 3. Pass Repository to the Factory
+            RecordsRepository(apiService)
         RecordsViewModelFactory(repository)
     }
 
     private val recordsAdapter = RecordsAdapter { record ->
-        // This code runs when "Stop" is clicked
         viewModel.stopRecord(record)
     }
 
