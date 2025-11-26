@@ -35,13 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             if (tokenManager.hasSession()) {
-                // Logged in? Go to List
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, RecordsListFragment())
                     .commit()
             } else {
                 // Not logged in? Go to Login
-                // Also hide the Toolbar if you want a clean login screen
                 binding.topAppBar.isVisible = false
 
                 supportFragmentManager.beginTransaction()

@@ -14,6 +14,10 @@ interface TimeTaggerApiService {
     @PUT("records")
     suspend fun updateRecords(@Body records: List<TimeTaggerRecord>): TimeTaggerPutResponse
 
+    // We use the settings endpoint as a "ping" endpoint to verify login credentials
+    @GET("settings")
+    suspend fun getSettings(): Any
+
     @GET("records")
     suspend fun getRecords(
         @Query("timerange") timerange: String,

@@ -5,8 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 class TokenManager(context: Context) {
-
-    // In production, use EncryptedSharedPreferences
+    // TODO Use Encrypted shared prefs
     private val prefs: SharedPreferences =
         context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
