@@ -1,4 +1,5 @@
 package net.ardevd.tagius.features.auth.ui
+
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -45,10 +46,16 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
 
                 viewModel.verifyAndLogin(url, token)
+            } else {
+                if (url.isEmpty()) {
+                    binding.urlInputLayout.error = "URL cannot be empty"
+                }
+                if (token.isEmpty()) {
+                    binding.tokenInputLayout.error = "Token cannot be empty"
+                }
             }
         }
 
-        // 2. Observe State
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -56,14 +63,17 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         is LoginUiState.Idle -> {
                             setLoading(false)
                         }
+
                         is LoginUiState.Loading -> {
                             setLoading(true)
                         }
+
                         is LoginUiState.Success -> {
                             setLoading(false)
                             // Proceed to save and navigate
                             performLoginSuccess()
                         }
+
                         is LoginUiState.Error -> {
                             setLoading(false)
                             handleError(state)
@@ -101,5 +111,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             .commit()
 
         requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
