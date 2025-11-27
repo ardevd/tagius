@@ -17,12 +17,13 @@ import java.util.Date
 import java.util.Locale
 
 class RecordsAdapter(
-    private val onStopClick: (TimeTaggerRecord) -> Unit
+    private val onStopClick: (TimeTaggerRecord) -> Unit,
+    private val onItemClick: (TimeTaggerRecord) -> Unit
 ) : ListAdapter<TimeTaggerRecord, RecordsAdapter.RecordViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
         val binding = ItemRecordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RecordViewHolder(binding, onStopClick)
+        return RecordViewHolder(binding, onStopClick, onItemClick)
     }
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
@@ -31,9 +32,10 @@ class RecordsAdapter(
 
     class RecordViewHolder(
         private val binding: ItemRecordBinding,
-        private val onStopClick: (TimeTaggerRecord) -> Unit
+        private val onStopClick: (TimeTaggerRecord) -> Unit,
+        private val onItemClick: (TimeTaggerRecord) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(record: TimeTaggerRecord) {
+        fun bind(record: TimeTaggerRecord) {
             binding.description.text = record.description.ifEmpty { "No Description" }
 
             val date = record.startTime.toReadableDate()
@@ -42,6 +44,10 @@ class RecordsAdapter(
             binding.timeInfo.text = "$date • $start - $end"
 
             val isRunning = record.endTime == record.startTime
+
+            binding.root.setOnClickListener {
+                onItemClick(record)
+            }
 
             if (isRunning) {
                 binding.duration.text = "Running"
@@ -57,8 +63,10 @@ class RecordsAdapter(
                 binding.cardContainer.strokeColor = binding.root.context.getColor(R.color.teal_200)
 
                 // Apply a stroke to the card to show it's active
-                binding.cardContainer.strokeWidth = 3 // dp equivalent (needs conversion in real app)
-                binding.cardContainer.strokeColor = binding.root.context.getColor(R.color.teal_200) // Or use ?attr/colorPrimary
+                binding.cardContainer.strokeWidth =
+                    3 // dp equivalent (needs conversion in real app)
+                binding.cardContainer.strokeColor =
+                    binding.root.context.getColor(R.color.teal_200) // Or use ?attr/colorPrimary
 
                 // Optional: Subtle background tint
                 // binding.cardContainer.setCardBackgroundColor(...)
@@ -78,7 +86,10 @@ class RecordsAdapter(
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<TimeTaggerRecord>() {
-        override fun areItemsTheSame(oldItem: TimeTaggerRecord, newItem: TimeTaggerRecord) = oldItem.key == newItem.key
-        override fun areContentsTheSame(oldItem: TimeTaggerRecord, newItem: TimeTaggerRecord) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: TimeTaggerRecord, newItem: TimeTaggerRecord) =
+            oldItem.key == newItem.key
+
+        override fun areContentsTheSame(oldItem: TimeTaggerRecord, newItem: TimeTaggerRecord) =
+            oldItem == newItem
     }
 }

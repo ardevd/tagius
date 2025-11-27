@@ -17,6 +17,7 @@ import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
+import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModelFactory
@@ -35,9 +36,22 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         RecordsViewModelFactory(repository)
     }
 
-    private val recordsAdapter = RecordsAdapter { record ->
-        viewModel.stopRecord(record)
-    }
+    private val recordsAdapter = RecordsAdapter(
+        onStopClick = { record -> viewModel.stopRecord(record) },
+        onItemClick = { record ->
+            // Open the Edit Sheet
+            val editSheet = EditRecordBottomSheet(
+                record = record,
+                onSave = { newDesc ->
+                    viewModel.updateRecord(record, newDesc)
+                },
+                onDelete = {
+                    viewModel.deleteRecord(record)
+                }
+            )
+            editSheet.show(parentFragmentManager, EditRecordBottomSheet.TAG)
+        }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

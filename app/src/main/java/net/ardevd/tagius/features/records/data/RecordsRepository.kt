@@ -35,6 +35,43 @@ class RecordsRepository(service: TimeTaggerApiService) {
         }
     }
 
+    suspend fun deleteRecord(record: TimeTaggerRecord): Boolean {
+        val now = System.currentTimeMillis() / 1000
+
+        // The Timetagger convention for deletion:
+        // Prefix "HIDDEN" to description
+        // Update 'mt' (modified time)
+        val newDescription = "HIDDEN ${record.description}"
+
+        val deletedRecord = record.copy(
+            description = newDescription,
+            modifiedTime = now
+        )
+
+        return try {
+            val response = apiService.updateRecords(listOf(deletedRecord))
+            response.accepted.contains(record.key)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun updateRecord(record: TimeTaggerRecord, newDescription: String): Boolean {
+        val now = System.currentTimeMillis() / 1000
+
+        val updatedRecord = record.copy(
+            description = newDescription,
+            modifiedTime = now
+        )
+
+        return try {
+            val response = apiService.updateRecords(listOf(updatedRecord))
+            response.accepted.contains(record.key)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     suspend fun stopRecord(record: TimeTaggerRecord): Boolean {
         val now = System.currentTimeMillis() / 1000
 
