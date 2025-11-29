@@ -17,6 +17,7 @@ import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
+import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModelFactory
@@ -30,14 +31,23 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     private val viewModel: RecordsViewModel by viewModels {
         val apiService = RetrofitClient.getInstance(requireContext())
-        val repository =
-            RecordsRepository(apiService)
+        val repository = RecordsRepository(apiService)
         RecordsViewModelFactory(repository)
     }
 
-    private val recordsAdapter = RecordsAdapter { record ->
-        viewModel.stopRecord(record)
-    }
+    private val recordsAdapter =
+        RecordsAdapter(
+            onStopClick = { record -> viewModel.stopRecord(record) },
+            onItemClick = { record ->
+                val editSheet =
+                    EditRecordBottomSheet(record = record, onSave = { newDesc, newStart, newEnd ->
+
+                        viewModel.updateRecord(record, newDesc, newStart, newEnd)
+                    }, onDelete = {
+                        viewModel.deleteRecord(record)
+                    })
+                editSheet.show(parentFragmentManager, EditRecordBottomSheet.TAG)
+            })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,11 +68,15 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val typedValue = android.util.TypedValue()
 
         // Get colorPrimary
-        requireContext().theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+        requireContext().theme.resolveAttribute(
+            com.google.android.material.R.attr.colorPrimary, typedValue, true
+        )
         val colorPrimary = typedValue.data
 
         // Get colorSurfaceContainer (or colorSurface)
-        requireContext().theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerHigh, typedValue, true)
+        requireContext().theme.resolveAttribute(
+            com.google.android.material.R.attr.colorSurfaceContainerHigh, typedValue, true
+        )
         val colorSurface = typedValue.data
 
         binding.swipeRefresh.setColorSchemeColors(colorPrimary)
@@ -104,12 +118,14 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                             binding.recyclerView.isVisible = false
                             binding.errorText.isVisible = false
                         }
+
                         is RecordsUiState.Success -> {
                             binding.progressBar.isVisible = false
                             binding.recyclerView.isVisible = true
                             binding.errorText.isVisible = false
                             recordsAdapter.submitList(state.records)
                         }
+
                         is RecordsUiState.Error -> {
                             binding.progressBar.isVisible = false
                             binding.errorText.isVisible = true

@@ -55,6 +55,20 @@ class RecordsViewModel(
         }
     }
 
+    fun updateRecord(record: TimeTaggerRecord, newDescription: String, newStart: Long, newEnd: Long) {
+        viewModelScope.launch {
+            val success = repository.updateRecord(record, newDescription, newStart, newEnd)
+            if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Update failed")
+        }
+    }
+
+    fun deleteRecord(record: TimeTaggerRecord) {
+        viewModelScope.launch {
+            val success = repository.deleteRecord(record)
+            if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Delete failed")
+        }
+    }
+
     fun loadRecords() {
         viewModelScope.launch {
             _uiState.value = RecordsUiState.Loading
