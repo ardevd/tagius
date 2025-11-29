@@ -33,8 +33,11 @@ class EditRecordBottomSheet(
         binding.saveButton.setOnClickListener {
             val newDesc = binding.descriptionInput.text.toString().trim()
             if (newDesc.isNotEmpty()) {
+                binding.inputLayout.error = null
                 onSave(newDesc)
                 dismiss()
+            } else {
+                binding.inputLayout.error = "Please enter a description"
             }
         }
 
