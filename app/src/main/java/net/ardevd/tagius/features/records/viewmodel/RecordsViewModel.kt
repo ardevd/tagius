@@ -55,9 +55,9 @@ class RecordsViewModel(
         }
     }
 
-    fun updateRecord(record: TimeTaggerRecord, newDescription: String) {
+    fun updateRecord(record: TimeTaggerRecord, newDescription: String, newStart: Long, newEnd: Long) {
         viewModelScope.launch {
-            val success = repository.updateRecord(record, newDescription)
+            val success = repository.updateRecord(record, newDescription, newStart, newEnd)
             if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Update failed")
         }
     }

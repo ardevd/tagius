@@ -56,12 +56,19 @@ class RecordsRepository(service: TimeTaggerApiService) {
         }
     }
 
-    suspend fun updateRecord(record: TimeTaggerRecord, newDescription: String): Boolean {
+    suspend fun updateRecord(
+        record: TimeTaggerRecord,
+        newDescription: String,
+        newStart: Long, // Unix seconds
+        newEnd: Long    // Unix seconds
+    ): Boolean {
         val now = System.currentTimeMillis() / 1000
 
         val updatedRecord = record.copy(
             description = newDescription,
-            modifiedTime = now
+            startTime = newStart,
+            endTime  = newEnd,
+            modifiedTime = now // Mark as modified now
         )
 
         return try {
