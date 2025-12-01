@@ -56,7 +56,7 @@ class TokenManager(private val context: Context) {
     }
 
     fun getServerUrlBlocking(): String = runBlocking {
-        serverUrlFlow.first()
+        serverUrlFlow.first() + "timetagger/api/v2/"
     }
 
 
