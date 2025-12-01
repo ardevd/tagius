@@ -101,16 +101,17 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         val url = binding.urlInput.text.toString().trim()
         val token = binding.tokenInput.text.toString().trim()
 
-        TokenManager(requireContext()).saveConnectionDetails(url, token)
+        // Launch coroutine for saving
+        viewLifecycleOwner.lifecycleScope.launch {
+            TokenManager(requireContext()).saveConnectionDetails(url, token)
+            RetrofitClient.reset()
 
-        RetrofitClient.reset()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RecordsListFragment())
+                .commit()
 
-
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, RecordsListFragment())
-            .commit()
-
-        requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true
+            requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true
+        }
     }
 
     override fun onDestroy() {

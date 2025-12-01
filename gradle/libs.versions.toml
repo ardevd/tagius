@@ -15,6 +15,7 @@ navigationFragmentKtx = "2.6.0"
 swipeRefreshLayout = "1.1.0"
 navigationUiKtx = "2.6.0"
 retrofit = "3.0.0"
+datastorePrefs = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit"}
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout"}
+androidx-datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePrefs"}
 
 
 [plugins]
