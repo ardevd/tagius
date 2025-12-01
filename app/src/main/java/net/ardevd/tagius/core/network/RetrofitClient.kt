@@ -31,7 +31,7 @@ object RetrofitClient {
         val tokenManager = TokenManager(context)
         val authInterceptor = AuthInterceptor(tokenManager)
 
-        val baseUrl = tokenManager.getServerUrl()
+        val baseUrl = tokenManager.getServerUrlBlocking()
 
 
         val okHttpClient = OkHttpClient.Builder()

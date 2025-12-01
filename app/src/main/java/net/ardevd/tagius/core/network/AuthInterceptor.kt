@@ -9,7 +9,7 @@ class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        val token = tokenManager.getToken()
+        val token = tokenManager.getTokenBlocking()
 
         val newRequestBuilder = originalRequest.newBuilder()
 

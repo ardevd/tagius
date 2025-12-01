@@ -3,38 +3,62 @@ package net.ardevd.tagius.core.data
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
-class TokenManager(context: Context) {
-    // TODO Use Encrypted shared prefs
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_prefs")
+
+class TokenManager(private val context: Context) {
 
     companion object {
-        private const val KEY_AUTH_TOKEN = "auth_token"
-        private const val KEY_SERVER_URL = "server_url"
+        private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
+        private val KEY_SERVER_URL = stringPreferencesKey("server_url")
         private const val DEFAULT_URL = "https://timetagger.app/"
     }
 
-    fun saveConnectionDetails(url: String, token: String) {
-        // Ensure URL ends with / to avoid Retrofit crashes
+    val authTokenFlow: Flow<String?> = context.dataStore.data
+        .map { preferences ->
+            preferences[KEY_AUTH_TOKEN]
+        }
+
+    val serverUrlFlow: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[KEY_SERVER_URL] ?: DEFAULT_URL
+        }
+
+
+
+    suspend fun saveConnectionDetails(url: String, token: String) {
         val cleanUrl = if (url.endsWith("/")) url else "$url/"
 
-        prefs.edit {
-            putString(KEY_SERVER_URL, cleanUrl)
-                .putString(KEY_AUTH_TOKEN, token)
+        context.dataStore.edit { preferences ->
+            preferences[KEY_SERVER_URL] = cleanUrl
+            preferences[KEY_AUTH_TOKEN] = token
         }
     }
 
-    fun hasSession(): Boolean {
-        return !getToken().isNullOrBlank()
+    suspend fun clearSession() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(KEY_AUTH_TOKEN)
+            // Optional: Keep the URL so they don't have to retype it
+        }
     }
 
-    fun getServerUrl(): String {
-        val baseUrl =  prefs.getString(KEY_SERVER_URL, DEFAULT_URL) ?: DEFAULT_URL
-        return baseUrl + "timetagger/api/v2/"
+    fun getTokenBlocking(): String? = runBlocking {
+        authTokenFlow.first()
     }
 
-    fun getToken(): String? {
-        return prefs.getString(KEY_AUTH_TOKEN, "")
+    fun getServerUrlBlocking(): String = runBlocking {
+        serverUrlFlow.first()
     }
+
+
+
 }
