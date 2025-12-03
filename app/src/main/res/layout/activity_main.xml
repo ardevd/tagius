@@ -33,8 +33,8 @@
         app:srcCompat="@drawable/ic_add"
 
         style="@style/Widget.Material3.FloatingActionButton.Large.Primary"
-        app:backgroundTint="?attr/colorPrimaryContainer"
-        app:tint="?attr/colorOnPrimaryContainer"
+        app:backgroundTint="@color/dark_blue"
+        app:tint="@color/dark_orange"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
