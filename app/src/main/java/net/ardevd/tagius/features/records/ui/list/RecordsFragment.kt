@@ -84,7 +84,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
         // Access the FAB from the Activity
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.fabAdd)
-
+        fab.isVisible = true
         fab.setOnClickListener {
             val bottomSheet = AddRecordBottomSheet { description ->
                 // Now we can easily call the ViewModel!
