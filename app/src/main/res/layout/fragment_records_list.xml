@@ -12,6 +12,7 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:scrollbars="none"
+        android:contentDescription="Time range filter options"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
