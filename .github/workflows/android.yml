@@ -8,7 +8,7 @@ on:
 
 jobs:
   check:
-    name: Check Code Quality
+    name: Code Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
