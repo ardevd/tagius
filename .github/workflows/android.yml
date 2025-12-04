@@ -27,15 +27,24 @@ jobs:
       - name: Run Android Lint
         run: ./gradlew lintDebug
 
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
-
-      - name: Upload Test Reports
-        if: always() 
+      - name: Run Tests & Generate Coverage
+        run: ./gradlew koverXmlReportDebug
+        
+      - name: Upload Coverage Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
-          path: app/build/reports/tests/
+          name: coverage-report-html
+          path: app/build/reports/kover/htmlDebug/
+
+      - name: Add Coverage PR Comment
+        uses: madrapps/jacoco-report@v1.6.1
+        if: github.event_name == 'pull_request' 
+        with:
+          paths: app/build/reports/kover/reportDebug.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 20
+          min-coverage-changed-files: 60
+          title: "Code Coverage Report"
 
   # Only runs if 'check' job passes
   build:
