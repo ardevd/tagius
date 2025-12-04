@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TimeTaggerRecord
+import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
 
 class RecordsViewModel(
@@ -20,9 +21,13 @@ class RecordsViewModel(
     // The UI collects from this StateFlow
     val uiState: StateFlow<RecordsUiState> = _uiState.asStateFlow()
 
+    private var currentStart: Long = 0
+    private var currentEnd: Long = 0
+
     init {
-        // Automatically load records when the ViewModel is created
-        loadRecords()
+        // Default to last 7 days
+        val (start, end) = DateRanges.getLast7Days()
+        loadRecords(start, end)
     }
 
     fun startTimer(description: String) {
@@ -42,20 +47,23 @@ class RecordsViewModel(
 
     fun stopRecord(record: TimeTaggerRecord) {
         viewModelScope.launch {
-            // Optional: Could set a specific "Stopping..." UI state here if you wanted
             val success = repository.stopRecord(record)
 
             if (success) {
                 // If successful, reload the list to show the new state
                 loadRecords()
             } else {
-                // Handle failure (e.g., show a Toast or Snackbar via a side-effect channel)
                 _uiState.value = RecordsUiState.Error("Failed to stop record")
             }
         }
     }
 
-    fun updateRecord(record: TimeTaggerRecord, newDescription: String, newStart: Long, newEnd: Long) {
+    fun updateRecord(
+        record: TimeTaggerRecord,
+        newDescription: String,
+        newStart: Long,
+        newEnd: Long
+    ) {
         viewModelScope.launch {
             val success = repository.updateRecord(record, newDescription, newStart, newEnd)
             if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Update failed")
@@ -69,17 +77,16 @@ class RecordsViewModel(
         }
     }
 
-    fun loadRecords() {
+
+    fun loadRecords(start: Long = currentStart, end: Long = currentEnd) {
+        currentStart = start
+        currentEnd = end
+
         viewModelScope.launch {
             _uiState.value = RecordsUiState.Loading
             try {
-                // Fetch last 7 days
-                // TODO: Make it user configurable
-                val now = System.currentTimeMillis() / 1000
-                val oneWeekAgo = now - (24 * 24 * 60 * 60)
-
-                val result = repository.fetchRecords(oneWeekAgo, now)
-
+                // Use the dynamic range
+                val result = repository.fetchRecords(start, end)
                 if (result.isEmpty()) {
                     // TODO: might want a specific Empty state, but Success with empty list works too
                     _uiState.value = RecordsUiState.Success(emptyList())
@@ -87,13 +94,14 @@ class RecordsViewModel(
                     _uiState.value = RecordsUiState.Success(result)
                 }
             } catch (e: Exception) {
-                _uiState.value = RecordsUiState.Error(e.localizedMessage ?: "Unknown error")
+                _uiState.value = RecordsUiState.Error(e.localizedMessage ?: "Error")
             }
         }
     }
 }
 
-class RecordsViewModelFactory(private val repository: RecordsRepository) : ViewModelProvider.Factory {
+class RecordsViewModelFactory(private val repository: RecordsRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RecordsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
