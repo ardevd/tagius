@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.R
 import net.ardevd.tagius.core.data.TokenManager
@@ -31,7 +32,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentLoginBinding.bind(view)
 
-        // 1. Handle Click
+        // Hide Fab
+        val fab = requireActivity().findViewById<FloatingActionButton>(R.id.fabAdd)
+        fab.isVisible = false
+
+        // Handle Click
         binding.connectButton.setOnClickListener {
             val url = binding.urlInput.text.toString().trim()
             val token = binding.tokenInput.text.toString().trim()

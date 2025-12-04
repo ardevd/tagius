@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     // Not logged in? Go to Login
                     binding.topAppBar.isVisible = false
-                    binding.fabAdd.isVisible = false
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, LoginFragment())
                         .commit()
