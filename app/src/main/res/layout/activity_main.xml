@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorSurface"
-    app:title="Tagius"
+    app:title="@string/app_name"
     app:titleCentered="true"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -22,14 +22,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar" />
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        android:name="net.ardevd.tagius.features.records.ui.list.RecordsListFragment" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:contentDescription="Start new timer"
+        android:contentDescription="@string/cd_start_new_timer"
         app:srcCompat="@drawable/ic_add"
 
         style="@style/Widget.Material3.FloatingActionButton.Large.Primary"
