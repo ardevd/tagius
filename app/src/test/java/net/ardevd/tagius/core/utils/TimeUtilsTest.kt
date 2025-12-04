@@ -148,7 +148,8 @@ class TimeUtilsTest {
         val now = Instant.now().epochSecond
         assertTrue("Today's end should not be in the future", todayEnd <= now + 86400) // Allow for some buffer
         assertTrue("Last 7 days end should not be in the future", last7End <= now + 86400)
-        assertTrue("This month's end should not be in the future", monthEnd <= now + 86400)
+        // Month end can be up to 31 days in the future (if today is the 1st of the month)
+        assertTrue("This month's end should be within current month", monthEnd <= now + 32L * 86400)
         
         // And: Start times should be before their corresponding end times
         assertTrue(todayStart < todayEnd)
