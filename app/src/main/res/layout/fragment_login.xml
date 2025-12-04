@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Welcome to Tagius"
+        android:text="@string/login_welcome"
         android:textAppearance="?attr/textAppearanceDisplaySmall"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="48dp"
-        android:text="Connect to your Timetagger instance"
+        android:text="@string/login_welcome_subtitle"
         android:textAppearance="?attr/textAppearanceBodyLarge"
         android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintBottom_toTopOf="@+id/urlInputLayout"
@@ -46,7 +46,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Server URL"
+        android:hint="@string/login_server_url_hint"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/tokenInputLayout"
         app:layout_constraintTop_toBottomOf="@id/subtitle">
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textUri"
-            android:text="https://timetagger.app/" />
+            android:text="@string/login_server_url_default" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -64,7 +64,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="API Token"
+        android:hint="@string/login_api_token"
         app:endIconMode="password_toggle"
         android:layout_marginBottom="32dp"
         app:helperText="Found in Web App > Settings > API"
@@ -82,7 +82,7 @@
         android:id="@+id/connectButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="Connect"
+        android:text="@string/login_connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tokenInputLayout" />
 

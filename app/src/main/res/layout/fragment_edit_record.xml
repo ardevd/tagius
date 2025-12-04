@@ -16,7 +16,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Record"
+        android:text="@string/timer_edit"
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:hint="Start"
+            android:hint="@string/timer_edit_start_hint"
             app:startIconDrawable="@drawable/ic_timer">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:hint="End"
+            android:hint="timer_edit_end_hint"
             app:startIconDrawable="@drawable/ic_timer">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -93,7 +93,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="24dp"
-        android:text="Save"
+        android:text="@string/timer_edit_save"
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timeContainer" />
@@ -106,7 +106,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         app:icon="@drawable/ic_delete"
-        android:text="Delete"
+        android:text="@string/timer_edit_delete"
         android:textColor="?attr/colorOnErrorContainer"
         app:backgroundTint="?attr/colorErrorContainer"
         app:iconTint="?attr/colorOnErrorContainer"
