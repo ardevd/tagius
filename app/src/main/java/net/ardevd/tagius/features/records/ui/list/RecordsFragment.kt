@@ -10,10 +10,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.R
 import net.ardevd.tagius.core.network.RetrofitClient
+import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
@@ -53,17 +55,13 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRecordsListBinding.bind(view)
 
-
-
         setupRecyclerView()
         observeState()
 
-        // 1. Setup Refresh Listener
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.loadRecords()
         }
 
-        // 2. M3 Styling: Use your Theme colors!
         // This makes the arrow the Primary color and the circle the Surface color
         val typedValue = android.util.TypedValue()
 
@@ -92,6 +90,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             }
             bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
         }
+
+        setupFilterChips()
     }
 
     private fun setupRecyclerView() {
@@ -147,5 +147,54 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     override fun onResume() {
         super.onResume()
         true.also { requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true }
+    }
+
+    private fun setupFilterChips() {
+        binding.timeRangeGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            val chipId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
+
+            when (chipId) {
+                R.id.chipToday -> {
+                    val (start, end) = DateRanges.getToday()
+                    viewModel.loadRecords(start, end)
+                }
+
+                R.id.chipWeek -> {
+                    val (start, end) = DateRanges.getLast7Days()
+                    viewModel.loadRecords(start, end)
+                }
+
+                R.id.chipMonth -> {
+                    val (start, end) = DateRanges.getThisMonth()
+                    viewModel.loadRecords(start, end)
+                }
+
+                R.id.chipCustom -> {
+                    showDateRangePicker()
+                }
+            }
+        }
+    }
+
+    private fun showDateRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select Custom Range")
+            .build()
+
+        picker.addOnPositiveButtonClickListener { selection ->
+            // Selection is Pair<Long, Long> in Milliseconds UTC
+            val startMs = selection.first
+            val endMs = selection.second
+
+            // Convert to Seconds
+            viewModel.loadRecords(startMs / 1000, endMs / 1000)
+        }
+
+        picker.addOnNegativeButtonClickListener {
+            // Reset to default chip if they cancel?
+            binding.chipWeek.isChecked = true
+        }
+
+        picker.show(parentFragmentManager, "rangePicker")
     }
 }
