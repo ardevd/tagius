@@ -1,5 +1,9 @@
 package net.ardevd.tagius.features.records.ui.list
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +16,7 @@ import net.ardevd.tagius.core.utils.getDurationString
 import net.ardevd.tagius.core.utils.toReadableDate
 import net.ardevd.tagius.core.utils.toReadableTime
 import net.ardevd.tagius.databinding.ItemRecordBinding
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.regex.Pattern
 
 class RecordsAdapter(
     private val onStopClick: (TimeTaggerRecord) -> Unit,
@@ -35,8 +37,42 @@ class RecordsAdapter(
         private val onStopClick: (TimeTaggerRecord) -> Unit,
         private val onItemClick: (TimeTaggerRecord) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        // Regex for tags (Start with #, followed by non-whitespace characters)
+        private val tagPattern = Pattern.compile("#\\S+")
+
+        private fun colorizeTags(text: String): SpannableString {
+            val spannable = SpannableString(text)
+            val matcher = tagPattern.matcher(text)
+
+            // Get the color from the theme
+            val color = binding.root.context.getColor(R.color.dark_blue)
+
+            while (matcher.find()) {
+                val start = matcher.start()
+                val end = matcher.end()
+
+                // Apply Color
+                spannable.setSpan(
+                    ForegroundColorSpan(color),
+                    start,
+                    end,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                spannable.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    start,
+                    end,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            return spannable
+        }
+
         fun bind(record: TimeTaggerRecord) {
-            binding.description.text = record.description.ifEmpty { "No Description" }
+            val rawDescription = record.description.ifEmpty { "No Description" }
+            binding.description.text = colorizeTags(rawDescription)
 
             val date = record.startTime.toReadableDate()
             val start = record.startTime.toReadableTime()

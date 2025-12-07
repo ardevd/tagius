@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TimeTaggerRecord
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
+import java.util.regex.Pattern
 
 class RecordsViewModel(
     private val repository: RecordsRepository
