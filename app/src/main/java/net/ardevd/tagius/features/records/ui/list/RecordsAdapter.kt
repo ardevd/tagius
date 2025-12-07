@@ -71,7 +71,8 @@ class RecordsAdapter(
         }
 
         fun bind(record: TimeTaggerRecord) {
-            val rawDescription = record.description.ifEmpty { "No Description" }
+            val rawDescription =
+                record.description.ifEmpty { binding.root.context.getString(R.string.records_no_description) }
             binding.description.text = colorizeTags(rawDescription)
 
             val date = record.startTime.toReadableDate()
@@ -86,7 +87,7 @@ class RecordsAdapter(
             }
 
             if (isRunning) {
-                binding.duration.text = "Running"
+                binding.duration.text = binding.root.context.getString(R.string.records_running)
 
                 // Show Stop Button
                 binding.stopButton.visibility = View.VISIBLE
@@ -94,17 +95,17 @@ class RecordsAdapter(
                     onStopClick(record)
                 }
 
-                // Stylistic touches (optional border)
+                // Stylistic touches
                 binding.cardContainer.strokeWidth = 3
                 binding.cardContainer.strokeColor = binding.root.context.getColor(R.color.teal_200)
 
                 // Apply a stroke to the card to show it's active
                 binding.cardContainer.strokeWidth =
-                    3 // dp equivalent (needs conversion in real app)
+                    3
                 binding.cardContainer.strokeColor =
-                    binding.root.context.getColor(R.color.teal_200) // Or use ?attr/colorPrimary
+                    binding.root.context.getColor(R.color.teal_200)
 
-                // Optional: Subtle background tint
+
                 // binding.cardContainer.setCardBackgroundColor(...)
             } else {
                 // STOPPED STATE:

@@ -24,6 +24,8 @@
     <string name="records_this_month">This Month</string>
     <string name="records_custom">Custom</string>
     <string name="records_error_loading">Error loading data</string>
+    <string name="records_running">Running</string>
+    <string name="records_no_description">No Description</string>
 
     <string name="record_stop">Stop</string>
 

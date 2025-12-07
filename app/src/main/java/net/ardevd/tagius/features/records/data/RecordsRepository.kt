@@ -67,7 +67,7 @@ class RecordsRepository(service: TimeTaggerApiService) {
         val updatedRecord = record.copy(
             description = newDescription,
             startTime = newStart,
-            endTime  = newEnd,
+            endTime = newEnd,
             modifiedTime = now // Mark as modified now
         )
 
@@ -109,7 +109,7 @@ class RecordsRepository(service: TimeTaggerApiService) {
                 .sortedByDescending { it.startTime }
         } catch (e: Exception) {
 
-            Log.d("Tagius","Error fetching records: ${e.message}")
+            Log.d("Tagius", "Error fetching records: ${e.message}")
             emptyList()
         }
     }
