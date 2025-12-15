@@ -46,7 +46,7 @@ class RecordsAdapter(
             val matcher = tagPattern.matcher(text)
 
             // Get the color from the theme
-            val color = binding.root.context.getColor(R.color.teal_700)
+            val color = binding.root.context.getColor(R.color.dark_orange)
 
             while (matcher.find()) {
                 val start = matcher.start()
