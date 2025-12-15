@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:hint="timer_edit_end_hint"
+            android:hint="@string/timer_edit_end_hint"
             app:startIconDrawable="@drawable/ic_timer">
 
             <com.google.android.material.textfield.TextInputEditText
