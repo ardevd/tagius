@@ -20,7 +20,20 @@ class TokenManager(private val context: Context) {
     companion object {
         private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
         private val KEY_SERVER_URL = stringPreferencesKey("server_url")
+        private val KEY_LAST_DESCRIPTION = stringPreferencesKey("last_description")
         private const val DEFAULT_URL = "https://timetagger.app/"
+    }
+
+    // Read the last description (default to empty string)
+    val lastDescriptionFlow: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[KEY_LAST_DESCRIPTION] ?: ""
+        }
+
+    suspend fun saveLastDescription(description: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_LAST_DESCRIPTION] = description
+        }
     }
 
     val authTokenFlow: Flow<String?> = context.dataStore.data
