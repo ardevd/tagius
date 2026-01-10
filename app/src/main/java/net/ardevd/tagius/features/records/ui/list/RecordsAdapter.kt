@@ -17,6 +17,7 @@ import net.ardevd.tagius.core.utils.toReadableDate
 import net.ardevd.tagius.core.utils.toReadableTime
 import net.ardevd.tagius.databinding.ItemRecordBinding
 import java.util.regex.Pattern
+import kotlin.math.absoluteValue
 
 class RecordsAdapter(
     private val onStopClick: (TimeTaggerRecord) -> Unit,
@@ -45,16 +46,24 @@ class RecordsAdapter(
             val spannable = SpannableString(text)
             val matcher = tagPattern.matcher(text)
 
-            // Get the color from the theme
-            val color = binding.root.context.getColor(R.color.dark_orange)
-
             while (matcher.find()) {
                 val start = matcher.start()
                 val end = matcher.end()
 
+                // Give tags a unique color deterministically
+                val tagString = text.substring(start, end)
+                // Use the hash to pick a Hue (0-360)
+                val hue = (tagString.hashCode().absoluteValue % 360).toFloat()
+
+                // Saturation: 0.5f (50%) = Pastel/Soft, 1.0f (100%) = Neon
+                val saturation = 0.5f
+                // Value: 0.9f = Bright/Light, 0.5f = Dark/Dim
+                val value = 0.7f
+
+                val tagColor = android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, value))
                 // Apply Color
                 spannable.setSpan(
-                    ForegroundColorSpan(color),
+                    ForegroundColorSpan(tagColor),
                     start,
                     end,
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
