@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import net.ardevd.tagius.databinding.FragmentAddRecordBinding
 
 class AddRecordBottomSheet(
+    private val initialDescription: String = "",
     private val onStartTimer: (String) -> Unit
 ) : BottomSheetDialogFragment() {
 
@@ -24,6 +25,13 @@ class AddRecordBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Pre-fill the text
+        if (initialDescription.isNotEmpty()) {
+            binding.descriptionInput.setText(initialDescription)
+            // Optional: Select all text so the user can easily overwrite it if they want
+            binding.descriptionInput.selectAll()
+        }
 
         // Focus the input immediately (Optional UX improvement)
         binding.descriptionInput.requestFocus()

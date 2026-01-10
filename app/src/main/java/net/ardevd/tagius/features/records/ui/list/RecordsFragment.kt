@@ -7,6 +7,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.R
+import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
@@ -32,9 +35,17 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
 
     private val viewModel: RecordsViewModel by viewModels {
-        val apiService = RetrofitClient.getInstance(requireContext())
-        val repository = RecordsRepository(apiService)
-        RecordsViewModelFactory(repository)
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val context = requireContext().applicationContext
+                val tokenManager = TokenManager(context)
+                val apiService = RetrofitClient.getInstance(context)
+                val repository = RecordsRepository(apiService)
+                //  Return the ViewModel with both dependencies
+                @Suppress("UNCHECKED_CAST")
+                return RecordsViewModel(repository, tokenManager) as T
+            }
+        }
     }
 
     private val recordsAdapter =
@@ -84,8 +95,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.fabAdd)
         fab.isVisible = true
         fab.setOnClickListener {
-            val bottomSheet = AddRecordBottomSheet { description ->
-                // Now we can easily call the ViewModel!
+            val lastDesc = viewModel.lastDescription.value
+            val bottomSheet = AddRecordBottomSheet(initialDescription = lastDesc) { description ->
                 viewModel.startTimer(description)
             }
             bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)

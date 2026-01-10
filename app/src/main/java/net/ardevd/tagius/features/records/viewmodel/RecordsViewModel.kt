@@ -4,16 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TimeTaggerRecord
+import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import java.util.regex.Pattern
 
 class RecordsViewModel(
-    private val repository: RecordsRepository
+    private val repository: RecordsRepository,
+    private val tokenManager: TokenManager,
 ) : ViewModel() {
 
     // Backing property to avoid state updates from outside
@@ -31,11 +35,20 @@ class RecordsViewModel(
         loadRecords(start, end)
     }
 
+    val lastDescription: StateFlow<String> = tokenManager.lastDescriptionFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = ""
+        )
+
     fun startTimer(description: String) {
         viewModelScope.launch {
             val success = repository.startRecord(description)
 
             if (success) {
+                // Store description
+                tokenManager.saveLastDescription(description)
                 // Refresh the list to show the new running record
                 loadRecords()
             } else {
@@ -99,12 +112,12 @@ class RecordsViewModel(
     }
 }
 
-class RecordsViewModelFactory(private val repository: RecordsRepository) :
+class RecordsViewModelFactory(private val repository: RecordsRepository, private val tokenManager: TokenManager) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RecordsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return RecordsViewModel(repository) as T
+            return RecordsViewModel(repository, tokenManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
