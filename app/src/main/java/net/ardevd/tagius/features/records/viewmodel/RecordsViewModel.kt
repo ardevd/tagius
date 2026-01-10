@@ -33,8 +33,6 @@ class RecordsViewModel(
 
     fun startTimer(description: String) {
         viewModelScope.launch {
-            // Optional: Set a loading state or "optimistic update" here
-
             val success = repository.startRecord(description)
 
             if (success) {
