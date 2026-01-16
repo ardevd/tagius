@@ -10,4 +10,4 @@ Designed for self-hosters and privacy enthusiasts, Tagius allows you to connect 
 
 ---
 **Disclaimer:**
-Tagius is an unofficial, open-source client. It is not affiliated with, associated with, or endorsed by the developers of the original Timetagger project. Timetagger is a trademark of its respective owner.
+Tagius is an unofficial, open-source client. It is not affiliated with, associated with, or endorsed by the developers of the original Timetagger project.
