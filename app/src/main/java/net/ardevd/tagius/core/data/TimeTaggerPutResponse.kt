@@ -1,7 +1,13 @@
 package net.ardevd.tagius.core.data
 
+import com.google.gson.annotations.SerializedName
+import java.io.Serial
+
 data class TimeTaggerPutResponse(
-    val accepted: List<String>, // Keys of successfully updated records
+    @SerializedName("accepted")
+    val accepted: List<String>, // Keys of successfully updated record
+    @SerializedName("failed")
     val failed: List<String>,   // Keys of rejected records
+    @SerializedName("errors")
     val errors: Map<String, String>? // Error messages (optional)
 )
