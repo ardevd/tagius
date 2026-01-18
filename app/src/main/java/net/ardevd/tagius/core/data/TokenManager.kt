@@ -60,7 +60,7 @@ class TokenManager(private val context: Context) {
     suspend fun clearSession() {
         context.dataStore.edit { preferences ->
             preferences.remove(KEY_AUTH_TOKEN)
-            // Optional: Keep the URL so they don't have to retype it
+            preferences.remove(KEY_LAST_DESCRIPTION)
         }
     }
 
