@@ -1,10 +1,15 @@
 package net.ardevd.tagius.features.records.ui.list
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
@@ -20,12 +25,14 @@ import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
+import net.ardevd.tagius.features.auth.ui.LoginFragment
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModelFactory
+import net.ardevd.tagius.features.settings.ui.SettingsBottomSheet
 
 class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
@@ -103,6 +110,53 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         }
 
         setupFilterChips()
+
+        setupMenu()
+    }
+
+    private fun setupMenu() {
+        val menuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_records_list, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_settings -> {
+                        showSettingsSheet()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun showSettingsSheet() {
+        val sheet = SettingsBottomSheet {
+            performLogout()
+        }
+        sheet.show(parentFragmentManager, SettingsBottomSheet.TAG)
+    }
+
+    private fun performLogout() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            TokenManager(requireContext()).clearSession()
+
+            RetrofitClient.reset()
+
+            // We use popBackStack to clear the history so "Back" doesn't return here
+            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, LoginFragment())
+                .commit()
+
+            // Hide Toolbar (since Login shouldn't show it)
+            requireActivity().findViewById<View>(R.id.topAppBar).isVisible = false
+        }
     }
 
     private fun setupRecyclerView() {
