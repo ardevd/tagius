@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/action_settings"
         android:contentDescription="@string/settings_account_settings"
         android:icon="@drawable/ic_settings"
-        android:title="@string/settings_settings"
-        app:iconTint="?attr/colorOnSurface"
-        android:showAsAction="ifRoom" />
+        android:iconTint="?attr/colorOnSurface"
+        android:showAsAction="ifRoom"
+        android:title="@string/settings_settings" />
 </menu>
