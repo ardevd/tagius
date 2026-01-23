@@ -26,6 +26,12 @@ class RecordsViewModel(
     // The UI collects from this StateFlow
     val uiState: StateFlow<RecordsUiState> = _uiState.asStateFlow()
 
+    // Cache the full list
+    private var allRecords: List<TimeTaggerRecord> = emptyList()
+
+    // Keep track of the current query to re-apply it if data refreshes in background
+    private var currentQuery: String = ""
+
     private var currentStart: Long = 0
     private var currentEnd: Long = 0
 
@@ -97,28 +103,34 @@ class RecordsViewModel(
         viewModelScope.launch {
             _uiState.value = RecordsUiState.Loading
             try {
-                // Use the dynamic range
+                // Fetch data
                 val result = repository.fetchRecords(start, end)
-                if (result.isEmpty()) {
-                    // TODO: might want a specific Empty state, but Success with empty list works too
-                    _uiState.value = RecordsUiState.Success(emptyList())
-                } else {
-                    _uiState.value = RecordsUiState.Success(result)
-                }
+                // Cache it
+                allRecords = result
+                // Apply any existing filter (or show all)
+                applyFilter()
+
             } catch (e: Exception) {
                 _uiState.value = RecordsUiState.Error(e.localizedMessage ?: "Error")
             }
         }
     }
-}
 
-class RecordsViewModelFactory(private val repository: RecordsRepository, private val tokenManager: TokenManager) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RecordsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return RecordsViewModel(repository, tokenManager) as T
+    fun onSearchQueryChanged(query: String) {
+        currentQuery = query
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        if (currentQuery.isBlank()) {
+            _uiState.value = RecordsUiState.Success(allRecords)
+        } else {
+            // Case-insensitive filter on the description
+            val filtered = allRecords.filter { record ->
+                record.description.contains(currentQuery, ignoreCase = true)
+            }
+            _uiState.value = RecordsUiState.Success(filtered)
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+

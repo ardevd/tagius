@@ -26,7 +26,8 @@
     <string name="records_error_loading">Error loading data</string>
     <string name="records_running">Running</string>
     <string name="records_no_description">No Description</string>
-
+    <string name="records_search">Search</string>
+    <string name="records_search_desc">Search Records</string>
     <string name="record_stop">Stop</string>
 
     <string name="cd_start_new_timer">Start a new timer</string>
