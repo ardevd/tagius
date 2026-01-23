@@ -28,13 +28,13 @@ class LoginViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                // 1. Create a temporary service with these exact credentials
+                // Create a temporary service with these exact credentials
                 val tempService = LoginRetrofitClient.createTemporaryService(url, token)
 
-                // 2. Try to hit the API
+                // Try to hit the API
                 tempService.getSettings()
 
-                // 3. If no exception thrown, we are good!
+                // If no exception thrown, we are good!
                 _uiState.value = LoginUiState.Success
 
             } catch (e: HttpException) {
@@ -48,7 +48,7 @@ class LoginViewModel : ViewModel() {
                 }
             } catch (e: IOException) {
                 // Network Errors (DNS, Connection Refused, Timeout)
-                _uiState.value = LoginUiState.Error("Could not connect to server. Check URL.", ErrorField.URL)
+                _uiState.value = LoginUiState.Error("Could not connect to server. ${e.message}", ErrorField.URL)
             } catch (e: Exception) {
                 _uiState.value = LoginUiState.Error(e.localizedMessage ?: "Unknown error", ErrorField.GENERAL)
             }
