@@ -3,10 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:title="@string/records_search"
+        android:icon="@drawable/ic_search"
+        android:contentDescription="@string/records_search_desc"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:iconTint="?attr/colorOnSurface" />
+
+    <item
         android:id="@+id/action_settings"
         android:contentDescription="@string/settings_account_settings"
         android:icon="@drawable/ic_settings"
-        android:iconTint="?attr/colorOnSurface"
-        app:showAsAction="ifRoom"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="ifRoom|collapseActionView"
         android:title="@string/settings_settings" />
 </menu>

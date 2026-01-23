@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,7 +32,6 @@ import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
-import net.ardevd.tagius.features.records.viewmodel.RecordsViewModelFactory
 import net.ardevd.tagius.features.settings.ui.SettingsBottomSheet
 
 class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
@@ -120,6 +120,24 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_records_list, menu)
+
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
+
+                searchView.queryHint = context?.getString(R.string.records_search_desc)
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        searchView.clearFocus() // Hide keyboard on enter
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        // Pass text to ViewModel
+                        viewModel.onSearchQueryChanged(newText.orEmpty())
+                        return true
+                    }
+                })
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -128,6 +146,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                         showSettingsSheet()
                         true
                     }
+
                     else -> false
                 }
             }
