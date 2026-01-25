@@ -82,8 +82,10 @@ class AddRecordBottomSheet(
     private fun appendTag(tag: String) {
         val currentText = binding.descriptionInput.text.toString()
 
-        // Don't add if already present
-        if (currentText.contains(tag)) return
+        // Don't add if already present as a separate tag/word
+        val escapedTag = Regex.escape(tag)
+        val tagPattern = Regex("(?<!\\S)$escapedTag(?!\\S)")
+        if (tagPattern.containsMatchIn(currentText)) return
 
         // Add space if needed
         val prefix = if (currentText.isNotEmpty() && !currentText.endsWith(" ")) " " else ""
