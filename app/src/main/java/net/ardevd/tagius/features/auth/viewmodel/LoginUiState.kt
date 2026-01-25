@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.ardevd.tagius.R
 import net.ardevd.tagius.core.network.LoginRetrofitClient
+import net.ardevd.tagius.core.ui.UIText
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -13,7 +15,7 @@ sealed interface LoginUiState {
     object Idle : LoginUiState
     object Loading : LoginUiState
     object Success : LoginUiState
-    data class Error(val message: String, val field: ErrorField) : LoginUiState
+    data class Error(val message: UIText, val field: ErrorField) : LoginUiState
 }
 
 enum class ErrorField { URL, TOKEN, GENERAL }
@@ -40,18 +42,28 @@ class LoginViewModel : ViewModel() {
             } catch (e: HttpException) {
                 // HTTP Errors (Server reached, but rejected us)
                 if (e.code() == 401 || e.code() == 403) {
-                    _uiState.value = LoginUiState.Error("Invalid API Token", ErrorField.TOKEN)
+                    emitError(UIText.StringResource(R.string.error_invalid_token), ErrorField.TOKEN)
                 } else if (e.code() == 404) {
-                    _uiState.value = LoginUiState.Error("API not found at this URL", ErrorField.URL)
+                    emitError(UIText.StringResource(R.string.error_api_not_found), ErrorField.URL)
                 } else {
-                    _uiState.value = LoginUiState.Error("Server error: ${e.code()}", ErrorField.GENERAL)
+                    emitError(
+                        UIText.StringResource(R.string.error_server_generic, e.code()),
+                        ErrorField.GENERAL
+                    )
                 }
             } catch (e: IOException) {
                 // Network Errors (DNS, Connection Refused, Timeout)
-                _uiState.value = LoginUiState.Error("Could not connect to server. ${e.message}", ErrorField.URL)
+                emitError(UIText.StringResource(R.string.error_connection_failed), ErrorField.URL)
             } catch (e: Exception) {
-                _uiState.value = LoginUiState.Error(e.localizedMessage ?: "Unknown error", ErrorField.GENERAL)
+                emitError(
+                    UIText.DynamicString(e.localizedMessage ?: "Unknown error"),
+                    ErrorField.GENERAL
+                )
             }
         }
+    }
+
+    private fun emitError(message: UIText, field: ErrorField) {
+        _uiState.value = LoginUiState.Error(message, field)
     }
 }
