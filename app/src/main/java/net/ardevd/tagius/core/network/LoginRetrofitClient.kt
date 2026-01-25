@@ -24,8 +24,10 @@ object LoginRetrofitClient {
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
 
+        val baseAPIURI = if (baseUrl.startsWith("https://timetagger.app")) "api/v2/" else "timetagger/api/v2/"
+
         return Retrofit.Builder()
-            .baseUrl(validUrl + "timetagger/api/v2/")
+            .baseUrl(validUrl + baseAPIURI)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
