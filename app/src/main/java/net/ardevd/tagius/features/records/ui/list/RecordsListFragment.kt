@@ -102,20 +102,23 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.fabAdd)
         fab.isVisible = true
         fab.setOnClickListener {
-            val lastDesc = viewModel.lastDescription.value
-            val topTags = viewModel.getTopTags(5)
-            val bottomSheet = AddRecordBottomSheet(
-                initialDescription = lastDesc,
-                suggestedTags = topTags
-            ) { description ->
-                viewModel.startTimer(description)
-            }
-            bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
+            showAddSheet()
         }
 
         setupFilterChips()
-
         setupMenu()
+    }
+
+    private fun showAddSheet() {
+        val lastDesc = viewModel.lastDescription.value
+        val topTags = viewModel.getTopTags(5)
+        val bottomSheet = AddRecordBottomSheet(
+            initialDescription = lastDesc,
+            suggestedTags = topTags
+        ) { description ->
+            viewModel.startTimer(description)
+        }
+        bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
     }
 
     private fun setupMenu() {
