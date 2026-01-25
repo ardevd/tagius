@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
+import net.ardevd.tagius.R
 import net.ardevd.tagius.databinding.FragmentAddRecordBinding
 
 class AddRecordBottomSheet(
     private val initialDescription: String = "",
+    private val suggestedTags: List<String> = emptyList(),
     private val onStartTimer: (String) -> Unit
 ) : BottomSheetDialogFragment() {
 
@@ -46,6 +49,52 @@ class AddRecordBottomSheet(
                 binding.inputLayout.error = "Please enter a description"
             }
         }
+
+        setupTagSuggestions()
+    }
+
+    private fun setupTagSuggestions() {
+        if (suggestedTags.isEmpty()) {
+            binding.tagScroll.visibility = View.GONE
+            return
+        }
+
+        binding.tagScroll.visibility = View.VISIBLE
+        binding.tagChipGroup.removeAllViews()
+
+        suggestedTags.forEach { tag ->
+            val chip = layoutInflater.inflate(
+                R.layout.item_suggestion_chip,
+                binding.tagChipGroup,
+                false
+            ) as Chip
+            chip.text = tag
+
+            // Logic: Append tag to text
+            chip.setOnClickListener {
+                appendTag(tag)
+            }
+
+            binding.tagChipGroup.addView(chip)
+        }
+    }
+
+    private fun appendTag(tag: String) {
+        val currentText = binding.descriptionInput.text.toString()
+
+        // Don't add if already present as a separate tag/word
+        val escapedTag = Regex.escape(tag)
+        val tagPattern = Regex("(?<!\\S)$escapedTag(?!\\S)")
+        if (tagPattern.containsMatchIn(currentText)) return
+
+        // Add space if needed
+        val prefix = if (currentText.isNotEmpty() && !currentText.endsWith(" ")) " " else ""
+
+        val newText = "$currentText$prefix$tag " // Add trailing space for next word
+        binding.descriptionInput.setText(newText)
+
+        // Move cursor to end
+        binding.descriptionInput.setSelection(newText.length)
     }
 
     override fun onDestroyView() {

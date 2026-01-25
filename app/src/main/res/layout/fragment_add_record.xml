@@ -22,6 +22,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dragHandle" />
 
+    <HorizontalScrollView
+        android:id="@+id/tagScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="24dp"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagChipGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true"
+            app:selectionRequired="false">
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayout"
         android:layout_width="match_parent"
@@ -31,7 +51,7 @@
         android:hint="@string/timer_desc_hint"
         app:endIconMode="clear_text"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@id/title">
+        app:layout_constraintTop_toBottomOf="@id/tagScroll">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/descriptionInput"

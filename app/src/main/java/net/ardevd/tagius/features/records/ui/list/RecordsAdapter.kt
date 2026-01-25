@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.ardevd.tagius.R
 import net.ardevd.tagius.core.data.TimeTaggerRecord
+import net.ardevd.tagius.core.ui.tagRegexPattern
 import net.ardevd.tagius.core.utils.getDurationString
 import net.ardevd.tagius.core.utils.toReadableDate
 import net.ardevd.tagius.core.utils.toReadableTime
@@ -39,12 +40,10 @@ class RecordsAdapter(
         private val onItemClick: (TimeTaggerRecord) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        // Regex for tags (Start with #, followed by non-whitespace characters)
-        private val tagPattern = Pattern.compile("#\\S+")
 
         private fun colorizeTags(text: String): SpannableString {
             val spannable = SpannableString(text)
-            val matcher = tagPattern.matcher(text)
+            val matcher = tagRegexPattern.matcher(text)
 
             while (matcher.find()) {
                 val start = matcher.start()
