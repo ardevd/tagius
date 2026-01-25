@@ -95,10 +95,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun handleError(error: LoginUiState.Error) {
+        val messageStr = error.message.asString(requireContext())
+
         when (error.field) {
-            ErrorField.URL -> binding.urlInputLayout.error = error.message
-            ErrorField.TOKEN -> binding.tokenInputLayout.error = error.message
-            ErrorField.GENERAL -> Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+            ErrorField.URL -> binding.urlInputLayout.error = messageStr
+            ErrorField.TOKEN -> binding.tokenInputLayout.error = messageStr
+            ErrorField.GENERAL -> Toast.makeText(context, messageStr, Toast.LENGTH_LONG).show()
         }
     }
 
