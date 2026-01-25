@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TimeTaggerRecord
 import net.ardevd.tagius.core.data.TokenManager
+import net.ardevd.tagius.core.ui.tagRegexPattern
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import java.util.regex.Pattern
@@ -134,13 +135,10 @@ class RecordsViewModel(
     }
 
     fun getTopTags(limit: Int = 10): List<String> {
-        // Regex to find tags (starts with #, followed by letters/numbers/dashes/underscores)
-        val tagPattern = Regex("#[\\w\\-]+")
-
         // Flatten all descriptions into a list of tags
         val allTags = allRecords.flatMap { record ->
             // Lowercase the tags.
-            tagPattern.findAll(record.description).map { it.value.lowercase() }
+            tagRegexPattern.toRegex().findAll(record.description).map { it.value.lowercase() }
         }
 
         // Group by tag, count frequency, sort descending, and take top N
