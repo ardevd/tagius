@@ -69,7 +69,9 @@ class TokenManager(private val context: Context) {
     }
 
     fun getServerUrlBlocking(): String = runBlocking {
-        serverUrlFlow.first() + "timetagger/api/v2/"
+        val baseUrl = serverUrlFlow.first()
+        val baseAPIURI = if (baseUrl.startsWith("https://timetagger.app")) "api/v2/" else "timetagger/api/v2/"
+        baseUrl + baseAPIURI
     }
 
 
