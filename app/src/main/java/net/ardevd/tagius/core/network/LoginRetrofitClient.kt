@@ -28,7 +28,7 @@ object LoginRetrofitClient {
 
         // Parse URL to extract host and compare properly
         val baseAPIURI = try {
-            val url = URL(validUrl)
+            val url = URL(baseUrl)
             val host = url.host.removePrefix("www.")
             if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
         } catch (e: MalformedURLException) {
