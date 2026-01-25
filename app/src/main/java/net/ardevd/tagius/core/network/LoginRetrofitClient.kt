@@ -4,6 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +31,7 @@ object LoginRetrofitClient {
             val url = URL(validUrl)
             val host = url.host.removePrefix("www.")
             if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
-        } catch (e: Exception) {
+        } catch (e: MalformedURLException) {
             // If URL parsing fails, default to self-hosted path
             "timetagger/api/v2/"
         }
