@@ -10,6 +10,24 @@ import java.util.concurrent.TimeUnit
 
 object LoginRetrofitClient {
 
+    /**
+     * Determines the correct API path based on the server URL.
+     * 
+     * @param baseUrl The base URL of the TimeTagger server
+     * @return "api/v2/" for hosted timetagger.app, "timetagger/api/v2/" for self-hosted instances
+     */
+    internal fun determineApiPath(baseUrl: String): String {
+        return try {
+            val url = URL(baseUrl)
+            // If host is null, default to empty string which will trigger self-hosted path
+            val host = url.host?.removePrefix("www.") ?: ""
+            if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
+        } catch (e: MalformedURLException) {
+            // If URL parsing fails, default to self-hosted path
+            "timetagger/api/v2/"
+        }
+    }
+
     fun createTemporaryService(baseUrl: String, token: String): TimeTaggerApiService {
         // Ensure URL ends with /
         val validUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
@@ -26,16 +44,7 @@ object LoginRetrofitClient {
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
 
-        // Parse URL to extract host and compare properly
-        val baseAPIURI = try {
-            val url = URL(baseUrl)
-            // If host is null, default to empty string which will trigger self-hosted path
-            val host = url.host?.removePrefix("www.") ?: ""
-            if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
-        } catch (e: MalformedURLException) {
-            // If URL parsing fails, default to self-hosted path
-            "timetagger/api/v2/"
-        }
+        val baseAPIURI = determineApiPath(baseUrl)
 
         return Retrofit.Builder()
             .baseUrl(validUrl + baseAPIURI)
