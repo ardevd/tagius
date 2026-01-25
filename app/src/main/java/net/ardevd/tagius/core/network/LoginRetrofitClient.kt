@@ -4,6 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 object LoginRetrofitClient {
@@ -24,7 +25,15 @@ object LoginRetrofitClient {
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
 
-        val baseAPIURI = if (baseUrl.startsWith("https://timetagger.app")) "api/v2/" else "timetagger/api/v2/"
+        // Parse URL to extract host and compare properly
+        val baseAPIURI = try {
+            val url = URL(validUrl)
+            val host = url.host.removePrefix("www.")
+            if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
+        } catch (e: Exception) {
+            // If URL parsing fails, default to self-hosted path
+            "timetagger/api/v2/"
+        }
 
         return Retrofit.Builder()
             .baseUrl(validUrl + baseAPIURI)
