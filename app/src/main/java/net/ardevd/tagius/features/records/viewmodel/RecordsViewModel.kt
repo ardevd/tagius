@@ -132,5 +132,25 @@ class RecordsViewModel(
             _uiState.value = RecordsUiState.Success(filtered)
         }
     }
+
+    fun getTopTags(limit: Int = 10): List<String> {
+        // Regex to find tags (starts with #, followed by letters/numbers/dashes/underscores)
+        val tagPattern = Regex("#[\\w\\-]+")
+
+        // Flatten all descriptions into a list of tags
+        val allTags = allRecords.flatMap { record ->
+            // Lowercase the tags.
+            tagPattern.findAll(record.description).map { it.value.lowercase() }
+        }
+
+        // Group by tag, count frequency, sort descending, and take top N
+        return allTags
+            .groupingBy { it }
+            .eachCount()
+            .toList()
+            .sortedByDescending { (_, count) -> count }
+            .map { (tag, _) -> tag }
+            .take(limit)
+    }
 }
 

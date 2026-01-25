@@ -103,7 +103,11 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         fab.isVisible = true
         fab.setOnClickListener {
             val lastDesc = viewModel.lastDescription.value
-            val bottomSheet = AddRecordBottomSheet(initialDescription = lastDesc) { description ->
+            val topTags = viewModel.getTopTags(5)
+            val bottomSheet = AddRecordBottomSheet(
+                initialDescription = lastDesc,
+                suggestedTags = topTags
+            ) { description ->
                 viewModel.startTimer(description)
             }
             bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
