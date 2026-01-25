@@ -22,7 +22,7 @@ object LoginRetrofitClient {
             // If host is null, default to empty string which will trigger self-hosted path
             val host = url.host?.removePrefix("www.") ?: ""
             if (host == "timetagger.app") "api/v2/" else "timetagger/api/v2/"
-        } catch (e: MalformedURLException) {
+        } catch (_: MalformedURLException) {
             // If URL parsing fails, default to self-hosted path
             "timetagger/api/v2/"
         }
