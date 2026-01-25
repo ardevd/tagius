@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import net.ardevd.tagius.core.network.LoginRetrofitClient
+import net.ardevd.tagius.core.network.RetrofitClient
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_prefs")
 
@@ -47,7 +49,6 @@ class TokenManager(private val context: Context) {
         }
 
 
-
     suspend fun saveConnectionDetails(url: String, token: String) {
         val cleanUrl = if (url.endsWith("/")) url else "$url/"
 
@@ -70,10 +71,7 @@ class TokenManager(private val context: Context) {
 
     fun getServerUrlBlocking(): String = runBlocking {
         val baseUrl = serverUrlFlow.first()
-        val baseAPIURI = if (baseUrl.startsWith("https://timetagger.app")) "api/v2/" else "timetagger/api/v2/"
+        val baseAPIURI = LoginRetrofitClient.determineApiPath(baseUrl)
         baseUrl + baseAPIURI
     }
-
-
-
 }
