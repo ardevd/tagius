@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "net.ardevd.tagius"
-        minSdk = 35
+        minSdk = 34
         targetSdk = 36
         versionCode = 4
         versionName = "0.7.0"
