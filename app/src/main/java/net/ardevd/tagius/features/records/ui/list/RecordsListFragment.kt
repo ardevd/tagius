@@ -131,9 +131,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     }
 
     fun openAddSheet(description: String) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            showAddSheet(description)
-        }
+        showAddSheet(description)
     }
 
     private fun setupMenu() {
