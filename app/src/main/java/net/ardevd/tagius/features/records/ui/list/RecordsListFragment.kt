@@ -86,8 +86,9 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
         // Get colorPrimary
         requireContext().theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimary, typedValue, true
+            androidx.appcompat.R.attr.colorPrimary, typedValue, true
         )
+
         val colorPrimary = typedValue.data
 
         // Get colorSurfaceContainer (or colorSurface)
