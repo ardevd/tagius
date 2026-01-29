@@ -18,6 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -29,11 +34,13 @@ import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.MainActivity
+import net.ardevd.tagius.features.background.ZombieCheckWorker
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
 import net.ardevd.tagius.features.settings.ui.SettingsBottomSheet
+import java.util.concurrent.TimeUnit
 
 class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
@@ -110,8 +117,10 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         setupFilterChips()
         setupMenu()
 
+        // Check intent
         if (requireActivity().intent.getBooleanExtra(MainActivity.PENDING_OPEN_SHEET, false)) {
-            val pendingDesc = requireActivity().intent.getStringExtra(MainActivity.PENDING_DESCRIPTION)
+            val pendingDesc =
+                requireActivity().intent.getStringExtra(MainActivity.PENDING_DESCRIPTION)
 
             // Clean up intent
             requireActivity().intent.removeExtra(MainActivity.PENDING_OPEN_SHEET)
@@ -119,6 +128,9 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
             pendingDesc?.let { openAddSheet(it) }
         }
+
+        // Start background workers
+        setupBackgroundWorkers()
     }
 
     private fun showAddSheet(description: String = viewModel.lastDescription.value) {
@@ -302,5 +314,26 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         }
 
         picker.show(parentFragmentManager, "rangePicker")
+    }
+
+    private fun setupBackgroundWorkers() {
+        val workManager = WorkManager.getInstance(requireContext())
+
+        // Define Constraints (We need network to check the API)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        // Define the Request (Run every 1 hour)
+        val zombieRequest = PeriodicWorkRequestBuilder<ZombieCheckWorker>(1, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+        // Enqueue Unique Work
+        workManager.enqueueUniquePeriodicWork(
+            "ZombieCheck",
+            ExistingPeriodicWorkPolicy.KEEP,
+            zombieRequest
+        )
     }
 }

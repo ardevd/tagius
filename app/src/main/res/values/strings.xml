@@ -42,4 +42,7 @@
     <string name="error_api_not_found">API not found at this URL</string>
     <string name="error_connection_failed">Could not connect to server. Check URL.</string>
     <string name="error_server_generic">Server error: %1$d</string>
+
+    <string name="zombie_still_working">Still working?</string>
+    <string name="zombie_still_working_desc">Your time has been running for %d hours.</string>
 </resources>
