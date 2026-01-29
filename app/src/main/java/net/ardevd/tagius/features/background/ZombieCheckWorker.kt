@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import net.ardevd.tagius.R
+import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 
 class ZombieCheckWorker(
@@ -26,10 +27,18 @@ class ZombieCheckWorker(
             if (response.records.isNotEmpty()) {
                 val record = response.records[0]
 
-                val durationHours = (now - record.startTime) / 3600
-                // CHECK THRESHOLD (10 hours)
-                if (durationHours >= 10) {
-                    sendNotification(durationHours.toInt())
+                // Check if we've notified on this before
+                val tokenManager = TokenManager(context)
+                val lastNotifiedId = tokenManager.getLastZombieIdBlocking()
+
+                if (record.key != lastNotifiedId) {
+                    val durationHours = (now - record.startTime) / 3600
+                    // CHECK THRESHOLD (10 hours)
+                    if (durationHours >= 10) {
+                        sendNotification(durationHours.toInt())
+                        // Save the record, to avoid future duplicate notifications
+                        tokenManager.saveLastZombieId(record.key)
+                    }
                 }
             }
 

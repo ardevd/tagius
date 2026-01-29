@@ -23,7 +23,20 @@ class TokenManager(private val context: Context) {
         private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
         private val KEY_SERVER_URL = stringPreferencesKey("server_url")
         private val KEY_LAST_DESCRIPTION = stringPreferencesKey("last_description")
+        private val KEY_LAST_ZOMBIE_ID = stringPreferencesKey("last_zombie_id")
         private const val DEFAULT_URL = "https://timetagger.app/"
+
+    }
+
+    fun getLastZombieIdBlocking(): String? = runBlocking {
+        context.dataStore.data.map { it[KEY_LAST_ZOMBIE_ID] }.first()
+    }
+
+    // Write
+    suspend fun saveLastZombieId(id: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_LAST_ZOMBIE_ID] = id
+        }
     }
 
     // Read the last description (default to empty string)
