@@ -107,18 +107,33 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
         setupFilterChips()
         setupMenu()
+
+        if (requireActivity().intent.getBooleanExtra("PENDING_OPEN_SHEET", false)) {
+            val pendingDesc = requireActivity().intent.getStringExtra("PENDING_DESCRIPTION")
+
+            // Clean up intent
+            requireActivity().intent.removeExtra("PENDING_OPEN_SHEET")
+            requireActivity().intent.removeExtra("PENDING_DESCRIPTION")
+
+            pendingDesc?.let { openAddSheet(it) }
+        }
     }
 
-    private fun showAddSheet() {
-        val lastDesc = viewModel.lastDescription.value
+    private fun showAddSheet(description: String = viewModel.lastDescription.value) {
         val topTags = viewModel.getTopTags(5)
         val bottomSheet = AddRecordBottomSheet(
-            initialDescription = lastDesc,
+            initialDescription = description,
             suggestedTags = topTags
         ) { description ->
             viewModel.startTimer(description)
         }
         bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
+    }
+
+    fun openAddSheet(description: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            showAddSheet(description)
+        }
     }
 
     private fun setupMenu() {

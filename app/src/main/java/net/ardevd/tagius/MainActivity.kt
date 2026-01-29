@@ -1,5 +1,6 @@
 package net.ardevd.tagius
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -14,6 +15,43 @@ import net.ardevd.tagius.features.records.ui.list.RecordsListFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private fun handleIntent(intent: Intent?) {
+
+        // 2. Check for Share Intent
+        if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+            val sharedText = extractSharedText(intent)
+            triggerAddSheet(intent, description = sharedText)
+        }
+    }
+
+    // Helper to combine Subject + Text (useful for Chrome which sends Title + URL)
+    private fun extractSharedText(intent: Intent): String {
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+        val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: ""
+
+        return if (subject.isNotEmpty()) {
+            "$subject $text"
+        } else {
+            text
+        }
+    }
+
+    private fun triggerAddSheet(intent: Intent, description: String?) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? RecordsListFragment
+
+        // Logic: Pass the description payload
+        if (fragment != null && fragment.isAdded && fragment.view != null) {
+            // Warm Start
+            description?.let { fragment.openAddSheet(it) }
+        } else {
+            // Cold Start
+            intent.putExtra("PENDING_OPEN_SHEET", true)
+            if (description != null) {
+                intent.putExtra("PENDING_DESCRIPTION", description)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,5 +77,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
     }
 }
