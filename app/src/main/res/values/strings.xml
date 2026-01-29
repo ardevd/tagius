@@ -44,5 +44,5 @@
     <string name="error_server_generic">Server error: %1$d</string>
 
     <string name="zombie_still_working">Still working?</string>
-    <string name="zombie_still_working_desc">Your time has been running for %d hours.</string>
+    <string name="zombie_still_working_desc">Your timer has been running for %d hours.</string>
 </resources>
