@@ -21,7 +21,9 @@ class MainActivity : AppCompatActivity() {
         // Check for Share Intent
         if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
             val sharedText = extractSharedText(intent)
-            triggerAddSheet(intent, description = sharedText)
+            if (sharedText.isNotBlank()) {
+                triggerAddSheet(intent, description = sharedText)
+            }
         }
     }
 
