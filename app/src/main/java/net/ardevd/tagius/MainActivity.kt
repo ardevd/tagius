@@ -1,8 +1,13 @@
 package net.ardevd.tagius
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
@@ -49,7 +54,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun triggerAddSheet(intent: Intent, description: String?) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? RecordsListFragment
+        val fragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as? RecordsListFragment
 
         // Logic: Pass the description payload
         if (fragment != null && fragment.isAdded && fragment.view != null) {
@@ -90,6 +96,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleIntent(intent)
+
+        checkAndRequestNotificationPermission()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -97,4 +105,20 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
         handleIntent(intent)
     }
+
+    private fun checkAndRequestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                101
+            )
+        }
+    }
+
+
 }
