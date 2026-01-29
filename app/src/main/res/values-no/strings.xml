@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tagius</string>
+    <string name="new_timer">Ny Timer</string>
+    <string name="timer_desc_hint">Hva jobber du med?</string>
+    <string name="timer_desc_helper">Tips: Bruk #tags for å organisere tiden din</string>
+    <string name="timer_start_timer">Start Timer</string>
+    <string name="timer_edit">Rediger Oppføring</string>
+    <string name="timer_edit_start_hint">Start</string>
+    <string name="timer_edit_end_hint">Avslutt</string>
+    <string name="timer_edit_save">Lagre</string>
+    <string name="timer_edit_delete">Slett</string>
+    <string name="login_welcome">Velkommen til Tagius</string>
+    <string name="login_welcome_subtitle">Koble til din Timetagger-instans</string>
+    <string name="login_server_url_hint">Server URL</string>
+    <string name="login_api_token">API Token</string>
+    <string name="login_connect">Koble Til</string>
+    <string name="records_today">I Dag</string>
+    <string name="records_last_seven_days">Siste 7 Dager</string>
+    <string name="records_this_month">Denne Måneden</string>
+    <string name="records_custom">Egendefinert</string>
+    <string name="records_error_loading">Feil ved lasting av data</string>
+    <string name="records_running">Pågår</string>
+    <string name="records_no_description">Ingen Beskrivelse</string>
+    <string name="records_search">Søk</string>
+    <string name="records_search_desc">Søk Oppføringer</string>
+    <string name="record_stop">Stopp</string>
+    <string name="cd_start_new_timer">Start en ny timer</string>
+    <string name="cd_range_filter">Alternativer for tidsfilter</string>
+    <string name="settings_account_settings">Kontoinnstillinger</string>
+    <string name="settings_connected_to">Koblet til</string>
+    <string name="settings_log_out">Logg Ut</string>
+    <string name="settings_settings">Innstillinger</string>
+    <string name="error_invalid_token">Ugyldig API token angitt</string>
+    <string name="error_api_not_found">API ikke tilgjengelig</string>
+    <string name="error_connection_failed">Kunne ikke koble til serveren. Sjekk URL</string>
+    <string name="error_server_generic">Serverfeil: %1$d</string>
+</resources>
