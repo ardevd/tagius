@@ -28,6 +28,7 @@ import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
 import net.ardevd.tagius.features.records.data.RecordsRepository
+import net.ardevd.tagius.MainActivity
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
@@ -108,12 +109,12 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         setupFilterChips()
         setupMenu()
 
-        if (requireActivity().intent.getBooleanExtra("PENDING_OPEN_SHEET", false)) {
-            val pendingDesc = requireActivity().intent.getStringExtra("PENDING_DESCRIPTION")
+        if (requireActivity().intent.getBooleanExtra(MainActivity.PENDING_OPEN_SHEET, false)) {
+            val pendingDesc = requireActivity().intent.getStringExtra(MainActivity.PENDING_DESCRIPTION)
 
             // Clean up intent
-            requireActivity().intent.removeExtra("PENDING_OPEN_SHEET")
-            requireActivity().intent.removeExtra("PENDING_DESCRIPTION")
+            requireActivity().intent.removeExtra(MainActivity.PENDING_OPEN_SHEET)
+            requireActivity().intent.removeExtra(MainActivity.PENDING_DESCRIPTION)
 
             pendingDesc?.let { openAddSheet(it) }
         }

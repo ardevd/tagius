@@ -16,6 +16,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    companion object {
+        const val PENDING_OPEN_SHEET = "PENDING_OPEN_SHEET"
+        const val PENDING_DESCRIPTION = "PENDING_DESCRIPTION"
+    }
+
     private fun handleIntent(intent: Intent?) {
 
         // Check for Share Intent
@@ -52,9 +57,9 @@ class MainActivity : AppCompatActivity() {
             description?.let { fragment.openAddSheet(it) }
         } else {
             // Cold Start
-            intent.putExtra("PENDING_OPEN_SHEET", true)
+            intent.putExtra(PENDING_OPEN_SHEET, true)
             if (description != null) {
-                intent.putExtra("PENDING_DESCRIPTION", description)
+                intent.putExtra(PENDING_DESCRIPTION, description)
             }
         }
     }
