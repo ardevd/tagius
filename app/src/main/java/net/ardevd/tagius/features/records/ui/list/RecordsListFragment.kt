@@ -197,6 +197,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     private fun performLogout() {
         viewLifecycleOwner.lifecycleScope.launch {
             TokenManager(requireContext()).clearSession()
+            stopBackgroundWorkers()
 
             RetrofitClient.reset()
 
@@ -314,6 +315,10 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         }
 
         picker.show(parentFragmentManager, "rangePicker")
+    }
+
+    private fun stopBackgroundWorkers() {
+        WorkManager.getInstance(requireContext()).cancelUniqueWork("ZombieCheck")
     }
 
     private fun setupBackgroundWorkers() {
