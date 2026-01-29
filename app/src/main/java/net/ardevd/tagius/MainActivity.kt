@@ -33,7 +33,11 @@ class MainActivity : AppCompatActivity() {
         val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: ""
 
         return if (subject.isNotEmpty()) {
-            "$subject $text"
+            if (text.isNotEmpty()) {
+                "$subject $text"
+            } else {
+                subject
+            }
         } else {
             text
         }
