@@ -18,6 +18,9 @@ retrofit = "3.0.0"
 datastorePrefs = "1.2.0"
 kover = "0.9.4"
 workRuntimeKtx = "2.11.1"
+mockk = "1.13.15"
+coroutinesTest = "1.10.2"
+workTesting = "2.11.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +40,9 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout"}
 androidx-datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePrefs"}
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "workTesting" }
 
 
 [plugins]
