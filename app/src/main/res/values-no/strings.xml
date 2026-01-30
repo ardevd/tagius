@@ -37,4 +37,5 @@
     <string name="error_server_generic">Serverfeil: %1$d</string>
     <string name="zombie_still_working">Jobber du fortsatt?</string>
     <string name="zombie_still_working_desc">Timeren din har kjørt i %d timer.</string>
+    <string name="notification_channel_timer_alerts">Timervarsler</string>
 </resources>

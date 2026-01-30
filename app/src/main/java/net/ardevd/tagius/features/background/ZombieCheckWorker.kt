@@ -59,7 +59,11 @@ class ZombieCheckWorker(
 
         // Create Channel (Safe to call repeatedly)
         val channel =
-            NotificationChannel(channelId, "Timer Alerts", NotificationManager.IMPORTANCE_HIGH)
+            NotificationChannel(
+                channelId,
+                applicationContext.getString(R.string.notification_channel_timer_alerts),
+                NotificationManager.IMPORTANCE_HIGH
+            )
         notificationManager.createNotificationChannel(channel)
         val descText = context.getString(R.string.zombie_still_working_desc, hours)
 
@@ -74,17 +78,12 @@ class ZombieCheckWorker(
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // Stop timer action
-        val stopIntent = Intent(applicationContext, StopTimerReceiver::class.java)
-        val stopPendingIntent = PendingIntent.getBroadcast(applicationContext, 1, stopIntent, PendingIntent.FLAG_IMMUTABLE)
-
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_timer) // Make sure you have this icon
             .setContentTitle(context.getString(R.string.zombie_still_working))
             .setContentText(descText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_stop, "Stop Timer", stopPendingIntent)
             .setAutoCancel(true)
             .build()
 
