@@ -108,18 +108,12 @@ class RecordsAdapter(
                     onStopClick(record)
                 }
 
-                // Stylistic touches
-                binding.cardContainer.strokeWidth = 3
-                binding.cardContainer.strokeColor = binding.root.context.getColor(R.color.teal_200)
-
                 // Apply a stroke to the card to show it's active
                 binding.cardContainer.strokeWidth =
-                    3
+                    6
                 binding.cardContainer.strokeColor =
                     binding.root.context.getColor(R.color.teal_200)
 
-
-                // binding.cardContainer.setCardBackgroundColor(...)
             } else {
                 // STOPPED STATE:
                 // Calculate and show duration
