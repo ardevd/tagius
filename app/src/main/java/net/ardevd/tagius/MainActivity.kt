@@ -4,21 +4,16 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.databinding.ActivityMainBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
-import net.ardevd.tagius.features.background.ZombieCheckWorker
 import net.ardevd.tagius.features.records.ui.list.RecordsListFragment
 
 class MainActivity : AppCompatActivity() {

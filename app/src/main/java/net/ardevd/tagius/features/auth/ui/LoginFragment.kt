@@ -10,11 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.R
@@ -24,9 +19,7 @@ import net.ardevd.tagius.databinding.FragmentLoginBinding
 import net.ardevd.tagius.features.auth.viewmodel.ErrorField
 import net.ardevd.tagius.features.auth.viewmodel.LoginUiState
 import net.ardevd.tagius.features.auth.viewmodel.LoginViewModel
-import net.ardevd.tagius.features.background.ZombieCheckWorker
 import net.ardevd.tagius.features.records.ui.list.RecordsListFragment
-import java.util.concurrent.TimeUnit
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 

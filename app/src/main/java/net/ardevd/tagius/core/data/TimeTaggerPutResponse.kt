@@ -1,7 +1,6 @@
 package net.ardevd.tagius.core.data
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serial
 
 data class TimeTaggerPutResponse(
     @SerializedName("accepted")

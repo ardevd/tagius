@@ -17,7 +17,6 @@ import net.ardevd.tagius.core.utils.getDurationString
 import net.ardevd.tagius.core.utils.toReadableDate
 import net.ardevd.tagius.core.utils.toReadableTime
 import net.ardevd.tagius.databinding.ItemRecordBinding
-import java.util.regex.Pattern
 import kotlin.math.absoluteValue
 
 class RecordsAdapter(
