@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import androidx.work.testing.TestListenableWorkerBuilder
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import net.ardevd.tagius.core.data.TimeTaggerRecord
@@ -32,7 +31,6 @@ class ZombieCheckWorkerTest {
     private lateinit var context: Context
     private lateinit var workerParams: WorkerParameters
     private lateinit var apiService: TimeTaggerApiService
-    private lateinit var tokenManager: TokenManager
     private lateinit var notificationManager: NotificationManager
 
     @Before
@@ -41,7 +39,6 @@ class ZombieCheckWorkerTest {
         context = mockk(relaxed = true)
         workerParams = mockk(relaxed = true)
         apiService = mockk()
-        tokenManager = mockk(relaxed = true)
         notificationManager = mockk(relaxed = true)
 
         // Mock TokenManager constructor
@@ -53,8 +50,9 @@ class ZombieCheckWorkerTest {
         mockkObject(RetrofitClient)
         every { RetrofitClient.getInstance(any()) } returns apiService
 
-        // Mock NotificationManager
+        // Mock NotificationManager for both context and applicationContext
         every { context.getSystemService(Context.NOTIFICATION_SERVICE) } returns notificationManager
+        every { context.applicationContext } returns context
     }
 
     @After
@@ -244,35 +242,44 @@ class ZombieCheckWorkerTest {
     }
 
     @Test
-    fun doWork_durationCalculation_correctForEdgeCases() = runBlocking {
-        // Test case 1: Record at exactly 9 hours 59 minutes (should not notify)
+    fun doWork_durationCalculation_almostTenHours_noNotification() = runBlocking {
+        // Given: Record at exactly 9 hours 59 minutes (should not notify)
         val now = System.currentTimeMillis() / 1000
         val almostTenHours = now - (9 * 3600 + 59 * 60)
-        val record1 = createTestRecord(key = "edge1", startTime = almostTenHours)
-        val response1 = TimeTaggerRecordResponse(records = listOf(record1))
+        val record = createTestRecord(key = "edge1", startTime = almostTenHours)
+        val response = TimeTaggerRecordResponse(records = listOf(record))
         
-        coEvery { apiService.getRecords(any(), running = 1) } returns response1
+        coEvery { apiService.getRecords(any(), running = 1) } returns response
 
-        val worker1 = createWorker()
-        val result1 = worker1.doWork()
+        // When: Worker executes
+        val worker = createWorker()
+        val result = worker.doWork()
 
-        assertEquals(ListenableWorker.Result.success(), result1)
+        // Then: Should return success
+        assertEquals(ListenableWorker.Result.success(), result)
+        
+        // And: Should not send notification (below threshold)
         verify(exactly = 0) { notificationManager.notify(any(), any()) }
+    }
 
-        // Clear invocations for next test
-        clearMocks(notificationManager, answers = false)
-
-        // Test case 2: Record at 10 hours 1 minute (should notify)
+    @Test
+    fun doWork_durationCalculation_justOverTenHours_sendsNotification() = runBlocking {
+        // Given: Record at 10 hours 1 minute (should notify)
+        val now = System.currentTimeMillis() / 1000
         val justOverTenHours = now - (10 * 3600 + 60)
-        val record2 = createTestRecord(key = "edge2", startTime = justOverTenHours)
-        val response2 = TimeTaggerRecordResponse(records = listOf(record2))
+        val record = createTestRecord(key = "edge2", startTime = justOverTenHours)
+        val response = TimeTaggerRecordResponse(records = listOf(record))
         
-        coEvery { apiService.getRecords(any(), running = 1) } returns response2
+        coEvery { apiService.getRecords(any(), running = 1) } returns response
 
-        val worker2 = createWorker()
-        val result2 = worker2.doWork()
+        // When: Worker executes
+        val worker = createWorker()
+        val result = worker.doWork()
 
-        assertEquals(ListenableWorker.Result.success(), result2)
+        // Then: Should return success
+        assertEquals(ListenableWorker.Result.success(), result)
+        
+        // And: Should send notification (above threshold)
         verify(atLeast = 1) { notificationManager.notify(any(), any()) }
     }
 
