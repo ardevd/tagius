@@ -1,8 +1,6 @@
 package net.ardevd.tagius.core.data
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -13,7 +11,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import net.ardevd.tagius.core.network.LoginRetrofitClient
-import net.ardevd.tagius.core.network.RetrofitClient
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_prefs")
 
@@ -23,7 +20,20 @@ class TokenManager(private val context: Context) {
         private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
         private val KEY_SERVER_URL = stringPreferencesKey("server_url")
         private val KEY_LAST_DESCRIPTION = stringPreferencesKey("last_description")
+        private val KEY_LAST_ZOMBIE_ID = stringPreferencesKey("last_zombie_id")
         private const val DEFAULT_URL = "https://timetagger.app/"
+
+    }
+
+    fun getLastZombieIdBlocking(): String? = runBlocking {
+        context.dataStore.data.map { it[KEY_LAST_ZOMBIE_ID] }.first()
+    }
+
+    // Write
+    suspend fun saveLastZombieId(id: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_LAST_ZOMBIE_ID] = id
+        }
     }
 
     // Read the last description (default to empty string)

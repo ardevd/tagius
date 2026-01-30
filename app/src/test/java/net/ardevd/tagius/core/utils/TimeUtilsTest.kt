@@ -121,7 +121,7 @@ class TimeUtilsTest {
     fun getThisMonth_spansCorrectNumberOfDays() {
         // Given: Current month's length
         val today = LocalDate.now()
-        val firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth())
+        today.with(TemporalAdjusters.firstDayOfMonth())
         val lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth())
         val daysInMonth = lastDayOfMonth.dayOfMonth
         
@@ -137,7 +137,7 @@ class TimeUtilsTest {
     @Test
     fun dateRanges_areConsistentWithTimezone() {
         // Given: System default timezone
-        val zone = ZoneId.systemDefault()
+        ZoneId.systemDefault()
         
         // When: Getting various ranges
         val (todayStart, todayEnd) = DateRanges.getToday()
@@ -184,9 +184,9 @@ class TimeUtilsTest {
     @Test
     fun dateRanges_timestampsAreInSeconds() {
         // When: Getting various ranges
-        val (todayStart, todayEnd) = DateRanges.getToday()
-        val (last7Start, last7End) = DateRanges.getLast7Days()
-        val (monthStart, monthEnd) = DateRanges.getThisMonth()
+        val (todayStart, _) = DateRanges.getToday()
+        val (last7Start, _) = DateRanges.getLast7Days()
+        val (monthStart, _) = DateRanges.getThisMonth()
         
         // Then: All timestamps should be reasonable epoch seconds (not milliseconds)
         // Unix epoch seconds for year 2020 onwards: > 1577836800

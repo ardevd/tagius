@@ -1,7 +1,6 @@
 package net.ardevd.tagius.features.records.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +13,6 @@ import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.ui.tagRegexPattern
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
-import java.util.regex.Pattern
 
 class RecordsViewModel(
     private val repository: RecordsRepository,
