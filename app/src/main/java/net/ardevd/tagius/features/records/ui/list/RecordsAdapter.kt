@@ -85,16 +85,15 @@ class RecordsAdapter(
 
             val date = record.startTime.toReadableDate()
             val start = record.startTime.toReadableTime()
-            val end = if (record.startTime == record.endTime) {
+            val isRunning = record.endTime == record.startTime
+            val end = if (isRunning) {
                 "..."
             } else {
                 // Only format this if we actually need it (Efficiency)
                 record.endTime.toReadableTime()
             }
-            
-            binding.timeInfo.text = "$date • $start - $end"
 
-            val isRunning = record.endTime == record.startTime
+            binding.timeInfo.text = "$date • $start - $end"
 
             binding.root.setOnClickListener {
                 onItemClick(record)
