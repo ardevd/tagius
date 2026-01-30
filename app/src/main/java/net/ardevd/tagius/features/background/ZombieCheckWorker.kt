@@ -14,7 +14,7 @@ import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 
 class ZombieCheckWorker(
-    val context: Context,
+    context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
@@ -31,7 +31,7 @@ class ZombieCheckWorker(
                 val record = response.records[0]
 
                 // Check if we've notified on this before
-                val tokenManager = TokenManager(context)
+                val tokenManager = TokenManager(applicationContext)
                 val lastNotifiedId = tokenManager.getLastZombieIdBlocking()
 
                 if (record.key != lastNotifiedId) {
@@ -65,7 +65,7 @@ class ZombieCheckWorker(
                 NotificationManager.IMPORTANCE_HIGH
             )
         notificationManager.createNotificationChannel(channel)
-        val descText = context.getString(R.string.zombie_still_working_desc, hours)
+        val descText = applicationContext.getString(R.string.zombie_still_working_desc, hours)
 
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -80,7 +80,7 @@ class ZombieCheckWorker(
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_timer) // Make sure you have this icon
-            .setContentTitle(context.getString(R.string.zombie_still_working))
+            .setContentTitle(applicationContext.getString(R.string.zombie_still_working))
             .setContentText(descText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
