@@ -58,7 +58,8 @@ class RecordsAdapter(
                 // Value: 0.9f = Bright/Light, 0.5f = Dark/Dim
                 val value = 0.7f
 
-                val tagColor = android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, value))
+                val tagColor =
+                    android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, value))
                 // Apply Color
                 spannable.setSpan(
                     ForegroundColorSpan(tagColor),
@@ -84,10 +85,15 @@ class RecordsAdapter(
 
             val date = record.startTime.toReadableDate()
             val start = record.startTime.toReadableTime()
-            val end = record.endTime.toReadableTime()
-            binding.timeInfo.text = "$date • $start - $end"
-
             val isRunning = record.endTime == record.startTime
+            val end = if (isRunning) {
+                "..."
+            } else {
+                // Only format this if we actually need it (Efficiency)
+                record.endTime.toReadableTime()
+            }
+
+            binding.timeInfo.text = "$date • $start - $end"
 
             binding.root.setOnClickListener {
                 onItemClick(record)
