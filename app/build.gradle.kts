@@ -14,8 +14,8 @@ android {
         applicationId = "net.ardevd.tagius"
         minSdk = 34
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.7.1"
+        versionCode = 6
+        versionName = "0.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
