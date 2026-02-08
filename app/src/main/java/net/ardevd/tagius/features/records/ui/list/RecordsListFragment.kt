@@ -1,6 +1,7 @@
 package net.ardevd.tagius.features.records.ui.list
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -111,6 +112,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.fabAdd)
         fab.isVisible = true
         fab.setOnClickListener {
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             showAddSheet()
         }
 
