@@ -45,7 +45,7 @@ class AddRecordBottomSheet(
 
             if (description.isNotEmpty()) {
                 onStartTimer(description)
-                view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
                 dismiss() // Close the sheet
             } else {
                 binding.inputLayout.error = "Please enter a description"
