@@ -1,6 +1,7 @@
 package net.ardevd.tagius.features.records.ui.add
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class AddRecordBottomSheet(
 
             if (description.isNotEmpty()) {
                 onStartTimer(description)
+                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
                 dismiss() // Close the sheet
             } else {
                 binding.inputLayout.error = "Please enter a description"
