@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import net.ardevd.tagius.BuildConfig
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.first
@@ -25,6 +26,10 @@ class SettingsBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Show version info
+        val version = BuildConfig.VERSION_NAME
+        binding.versionText.text = "v$version"
 
         // Display the stored URL so the user knows which server they are on
         viewLifecycleOwner.lifecycleScope.launch {
