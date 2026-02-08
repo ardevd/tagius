@@ -51,7 +51,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="https://timetagger.app"
+                android:text="@string/login_server_url_default"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textStyle="bold" />
         </LinearLayout>
