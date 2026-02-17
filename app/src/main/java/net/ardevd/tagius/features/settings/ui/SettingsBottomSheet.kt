@@ -19,21 +19,25 @@ class SettingsBottomSheet(
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val tokenManager = TokenManager(requireContext())
         // Show version info
         val version = BuildConfig.VERSION_NAME
         binding.versionText.text = "v$version"
 
         // Display the stored URL so the user knows which server they are on
         viewLifecycleOwner.lifecycleScope.launch {
-            val url = TokenManager(requireContext()).serverUrlFlow.first()
+            val url = tokenManager.serverUrlFlow.first()
             binding.serverUrlText.text = url
         }
 
@@ -41,6 +45,18 @@ class SettingsBottomSheet(
         binding.logoutButton.setOnClickListener {
             dismiss()
             onLogout()
+        }
+
+        // System Color setting handling
+        viewLifecycleOwner.lifecycleScope.launch {
+            val useDynamicColors = tokenManager.dynamicColorsFlow.first()
+            binding.dynamicColorsSwitch.isChecked = useDynamicColors
+        }
+
+        binding.dynamicColorsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                tokenManager.saveDynamicColors(isChecked)
+            }
         }
     }
 

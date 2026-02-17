@@ -10,7 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.databinding.ActivityMainBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
@@ -72,6 +74,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Dynamic color (if set)
+        runBlocking {
+            val tokenManager = TokenManager(applicationContext)
+            val useDynamicColors = tokenManager.dynamicColorsFlow.first()
+            if (useDynamicColors) {
+                DynamicColors.applyToActivitiesIfAvailable(application)
+            }
+        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
