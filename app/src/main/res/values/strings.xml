@@ -37,6 +37,7 @@
     <string name="settings_connected_to">Connected to</string>
     <string name="settings_log_out">Log Out</string>
     <string name="settings_settings">Settings</string>
+    <string name="settings_dynamic_colors">Use System Colors</string>
 
     <string name="error_invalid_token">Invalid API Token provided</string>
     <string name="error_api_not_found">API not found at this URL</string>

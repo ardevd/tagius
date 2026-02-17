@@ -3,6 +3,7 @@ package net.ardevd.tagius.core.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -21,6 +22,7 @@ class TokenManager(private val context: Context) {
         private val KEY_SERVER_URL = stringPreferencesKey("server_url")
         private val KEY_LAST_DESCRIPTION = stringPreferencesKey("last_description")
         private val KEY_LAST_ZOMBIE_ID = stringPreferencesKey("last_zombie_id")
+        private val KEY_DYNAMIC_COLORS = booleanPreferencesKey("dynamic_colors")
         private const val DEFAULT_URL = "https://timetagger.app/"
 
     }
@@ -83,5 +85,16 @@ class TokenManager(private val context: Context) {
         val baseUrl = serverUrlFlow.first()
         val baseAPIURI = LoginRetrofitClient.determineApiPath(baseUrl)
         baseUrl + baseAPIURI
+    }
+
+    val dynamicColorsFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[KEY_DYNAMIC_COLORS] ?: true
+    }
+
+    // Write Function
+    suspend fun saveDynamicColors(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_DYNAMIC_COLORS] = enabled
+        }
     }
 }
