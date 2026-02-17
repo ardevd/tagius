@@ -1,6 +1,6 @@
 **Tagius** is a native Android companion for **Timetagger**, the popular open-source time tracker.
 
-Currently available in open testing through [Google Play](https://play.google.com/store/apps/details?id=net.ardevd.tagius).
+Available on [Google Play](https://play.google.com/store/apps/details?id=net.ardevd.tagius).
 
 Designed for self-hosters and privacy enthusiasts, Tagius allows you to connect directly to your personal Timetagger instance (or the official hosted version) without relying on a browser tab. Enjoy a clean, native interface for tracking your tasks.
 
