@@ -28,6 +28,7 @@
     <string name="records_no_description">No Description</string>
     <string name="records_search">Search</string>
     <string name="records_search_desc">Search Records</string>
+    <string name="records_empty_list">No records found</string>
     <string name="record_stop">Stop</string>
 
     <string name="cd_start_new_timer">Start a new timer</string>
