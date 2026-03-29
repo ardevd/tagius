@@ -43,6 +43,20 @@
     <string name="error_connection_failed">Could not connect to server. Check URL.</string>
     <string name="error_server_generic">Server error: %1$d</string>
 
+    <string name="error_bad_gateway">Bad Gateway: The server is down or unreachable.</string>
+    <string name="error_service_unavailable">Service Unavailable: The server is currently unable to handle the request.</string>
+    <string name="error_gateway_timeout">Gateway Timeout: The server took too long to respond.</string>
+    <string name="error_unauthorized">Unauthorized: Please check your login credentials.</string>
+    <string name="error_forbidden">Forbidden: You don\'t have permission to access this.</string>
+    <string name="error_not_found">Not Found: The requested resource was not found.</string>
+    <string name="error_network_http">Network error: HTTP %1$d</string>
+    <string name="error_network_io">Network error: Please check your internet connection or server address.</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_start_timer">Failed to start timer</string>
+    <string name="error_stop_record">Failed to stop record</string>
+    <string name="error_update_failed">Update failed</string>
+    <string name="error_delete_failed">Delete failed</string>
+
     <string name="zombie_still_working">Still working?</string>
     <string name="zombie_still_working_desc">Your timer has been running for %d hours.</string>
     <string name="notification_channel_timer_alerts">Time Alerts</string>

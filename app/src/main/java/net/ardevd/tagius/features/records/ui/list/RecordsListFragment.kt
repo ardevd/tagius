@@ -6,8 +6,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -250,9 +250,9 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                         is RecordsUiState.Error -> {
                             binding.progressBar.isVisible = false
                             binding.errorText.isVisible = true
-                            binding.errorText.text = state.message
+                            binding.errorText.text = state.message.asString(requireContext())
 
-                            Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, state.message.asString(requireContext()), Snackbar.LENGTH_LONG).show()
                         }
                     }
                 }
