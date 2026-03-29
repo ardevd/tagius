@@ -8,7 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-
     // Volatile ensures atomic access for thread safety
     @Volatile
     private var apiServiceInstance: TimeTaggerApiService? = null
@@ -21,23 +20,19 @@ object RetrofitClient {
         }
     }
 
-    // TODO: Call this when adding support for switching servers or user log-out
     fun reset() {
         apiServiceInstance = null
     }
 
     private fun buildApiService(context: Context): TimeTaggerApiService {
-
         val tokenManager = TokenManager(context)
         val authInterceptor = AuthInterceptor(tokenManager)
 
         val baseUrl = tokenManager.getServerUrlBlocking()
 
-
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .build()
-
 
         val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
