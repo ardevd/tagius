@@ -24,6 +24,7 @@
     <string name="records_no_description">Ingen Beskrivelse</string>
     <string name="records_search">Søk</string>
     <string name="records_search_desc">Søk Oppføringer</string>
+    <string name="records_empty_list">Ingen oppføringer funnet</string>
     <string name="record_stop">Stopp</string>
     <string name="cd_start_new_timer">Start en ny timer</string>
     <string name="cd_range_filter">Alternativer for tidsfilter</string>

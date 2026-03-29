@@ -238,18 +238,21 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                             binding.progressBar.isVisible = true
                             binding.recyclerView.isVisible = false
                             binding.errorText.isVisible = false
+                            binding.emptyText.isVisible = false
                         }
 
                         is RecordsUiState.Success -> {
                             binding.progressBar.isVisible = false
-                            binding.recyclerView.isVisible = true
+                            binding.recyclerView.isVisible = state.records.isNotEmpty()
                             binding.errorText.isVisible = false
+                            binding.emptyText.isVisible = state.records.isEmpty()
                             recordsAdapter.submitList(state.records)
                         }
 
                         is RecordsUiState.Error -> {
                             binding.progressBar.isVisible = false
                             binding.errorText.isVisible = true
+                            binding.emptyText.isVisible = false
                             binding.errorText.text = state.message.asString(requireContext())
 
                             Snackbar.make(binding.root, state.message.asString(requireContext()), Snackbar.LENGTH_LONG).show()
