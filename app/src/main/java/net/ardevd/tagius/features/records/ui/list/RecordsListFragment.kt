@@ -251,6 +251,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
                         is RecordsUiState.Error -> {
                             binding.progressBar.isVisible = false
+                            binding.recyclerView.isVisible = false
                             binding.errorText.isVisible = true
                             binding.emptyText.isVisible = false
                             binding.errorText.text = state.message.asString(requireContext())
