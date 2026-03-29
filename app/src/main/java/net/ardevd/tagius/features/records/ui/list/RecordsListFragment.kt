@@ -267,7 +267,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     override fun onResume() {
         super.onResume()
-        true.also { requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true }
+        requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true
     }
 
     private fun setupFilterChips() {
