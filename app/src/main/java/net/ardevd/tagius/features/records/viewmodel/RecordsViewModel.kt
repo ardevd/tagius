@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import net.ardevd.tagius.R
 import net.ardevd.tagius.core.data.TimeTaggerRecord
 import net.ardevd.tagius.core.data.TokenManager
+import net.ardevd.tagius.core.ui.UIText
 import net.ardevd.tagius.core.ui.tagRegexPattern
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.features.records.data.RecordsRepository
@@ -57,7 +59,7 @@ class RecordsViewModel(
                 // Refresh the list to show the new running record
                 loadRecords()
             } else {
-                _uiState.value = RecordsUiState.Error("Failed to start timer")
+                _uiState.value = RecordsUiState.Error(UIText.StringResource(R.string.error_start_timer))
             }
         }
     }
@@ -70,7 +72,7 @@ class RecordsViewModel(
                 // If successful, reload the list to show the new state
                 loadRecords()
             } else {
-                _uiState.value = RecordsUiState.Error("Failed to stop record")
+                _uiState.value = RecordsUiState.Error(UIText.StringResource(R.string.error_stop_record))
             }
         }
     }
@@ -83,14 +85,14 @@ class RecordsViewModel(
     ) {
         viewModelScope.launch {
             val success = repository.updateRecord(record, newDescription, newStart, newEnd)
-            if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Update failed")
+            if (success) loadRecords() else _uiState.value = RecordsUiState.Error(UIText.StringResource(R.string.error_update_failed))
         }
     }
 
     fun deleteRecord(record: TimeTaggerRecord) {
         viewModelScope.launch {
             val success = repository.deleteRecord(record)
-            if (success) loadRecords() else _uiState.value = RecordsUiState.Error("Delete failed")
+            if (success) loadRecords() else _uiState.value = RecordsUiState.Error(UIText.StringResource(R.string.error_delete_failed))
         }
     }
 
@@ -110,7 +112,22 @@ class RecordsViewModel(
                 applyFilter()
 
             } catch (e: Exception) {
-                _uiState.value = RecordsUiState.Error(e.localizedMessage ?: "Error")
+                val errorMessage = when (e) {
+                    is retrofit2.HttpException -> {
+                        when (e.code()) {
+                            502 -> UIText.StringResource(R.string.error_bad_gateway)
+                            503 -> UIText.StringResource(R.string.error_service_unavailable)
+                            504 -> UIText.StringResource(R.string.error_gateway_timeout)
+                            401 -> UIText.StringResource(R.string.error_unauthorized)
+                            403 -> UIText.StringResource(R.string.error_forbidden)
+                            404 -> UIText.StringResource(R.string.error_not_found)
+                            else -> UIText.StringResource(R.string.error_network_http, e.code())
+                        }
+                    }
+                    is java.io.IOException -> UIText.StringResource(R.string.error_network_io)
+                    else -> e.localizedMessage?.let { UIText.DynamicString(it) } ?: UIText.StringResource(R.string.error_unknown)
+                }
+                _uiState.value = RecordsUiState.Error(errorMessage)
             }
         }
     }

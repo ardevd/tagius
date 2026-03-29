@@ -110,7 +110,7 @@ class RecordsRepository(service: TimeTaggerApiService) {
         } catch (e: Exception) {
 
             Log.d("Tagius", "Error fetching records: ${e.message}")
-            emptyList()
+            throw e
         }
     }
 }

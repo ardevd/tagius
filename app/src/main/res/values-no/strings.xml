@@ -35,7 +35,20 @@
     <string name="error_api_not_found">API ikke tilgjengelig</string>
     <string name="error_connection_failed">Kunne ikke koble til serveren. Sjekk URL</string>
     <string name="error_server_generic">Serverfeil: %1$d</string>
+    <string name="error_delete_failed">Sletting feilet</string>
     <string name="zombie_still_working">Jobber du fortsatt?</string>
     <string name="zombie_still_working_desc">Timeren din har kjørt i %d timer.</string>
     <string name="notification_channel_timer_alerts">Timervarsler</string>
+    <string name="error_bad_gateway">Bad Gateway: Serveren er nede</string>
+    <string name="error_service_unavailable">Tjeneste Utilgjengelig: Serveren kunne ikke håndtere forespørselen</string>
+    <string name="error_gateway_timeout">Timeout: Serveren brukte for lang tid på å svare</string>
+    <string name="error_unauthorized">Uautorisert: Sjekk token</string>
+    <string name="error_forbidden">Forbudt: Du har ikke rettigheter til å nå tjenesten</string>
+    <string name="error_not_found">Ikke funnet.</string>
+    <string name="error_network_http">Nettverksfeil. HTTP %1$d</string>
+    <string name="error_network_io">Nettverksfeil: Sjekk internettforbindelsen</string>
+    <string name="error_unknown">En ukjent feil oppstod.</string>
+    <string name="error_start_timer">Kunne ikke starte timer</string>
+    <string name="error_stop_record">Kunne ikke stanse timer</string>
+    <string name="error_update_failed">Oppdatering feilet</string>
 </resources>
