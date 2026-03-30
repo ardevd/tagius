@@ -21,7 +21,8 @@ class SimplePieChartView @JvmOverloads constructor(
     }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
-        textSize = 40f
+        // Treat 40f as an sp value and convert to pixels using scaledDensity
+        textSize = 40f * resources.displayMetrics.scaledDensity
         textAlign = Paint.Align.CENTER
     }
 
