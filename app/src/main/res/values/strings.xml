@@ -36,7 +36,7 @@
 
     <string name="records_stats">Stats</string>
     <string name="records_stats_desc">View Statistics</string>
-    <string name="stats_tags_used">Tags Used</string>
+    <string name="stats_tags_used">Tags</string>
     <string name="stats_duration_per_day">Duration per Day</string>
 
     <string name="settings_account_settings">Account Settings</string>
