@@ -53,8 +53,8 @@ class SimplePieChartView @JvmOverloads constructor(
 
             // Generate a color based on tag hash or random
             paint.color = Color.HSVToColor(floatArrayOf(
-                (Math.abs(tag.hashCode()) % 360).toFloat(), 
-                0.6f, 
+                Math.floorMod(tag.hashCode(), 360).toFloat(),
+                0.6f,
                 0.9f
             ))
 
