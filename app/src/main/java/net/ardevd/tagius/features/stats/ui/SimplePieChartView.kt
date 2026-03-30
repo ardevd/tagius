@@ -46,7 +46,6 @@ class SimplePieChartView @JvmOverloads constructor(
         rectF.set(cx - radius, cy - radius, cx + radius, cy + radius)
 
         var currentAngle = -90f
-        var index = 0
 
         for ((tag, value) in slices) {
             val sweepAngle = (value.toFloat() / totalValue.toFloat()) * 360f
@@ -69,7 +68,6 @@ class SimplePieChartView @JvmOverloads constructor(
             }
 
             currentAngle += sweepAngle
-            index++
         }
     }
 }
