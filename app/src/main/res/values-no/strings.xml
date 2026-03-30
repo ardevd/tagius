@@ -28,6 +28,7 @@
     <string name="record_stop">Stopp</string>
     <string name="cd_start_new_timer">Start en ny timer</string>
     <string name="cd_range_filter">Alternativer for tidsfilter</string>
+    <string name="stats_duration_per_day">Varighet per dag</string>
     <string name="settings_account_settings">Kontoinnstillinger</string>
     <string name="settings_connected_to">Koblet til</string>
     <string name="settings_log_out">Logg Ut</string>
@@ -52,4 +53,7 @@
     <string name="error_start_timer">Kunne ikke starte timer</string>
     <string name="error_stop_record">Kunne ikke stanse timer</string>
     <string name="error_update_failed">Oppdatering feilet</string>
+    <string name="records_stats">Stats</string>
+    <string name="records_stats_desc">Se Statistikk</string>
+    <string name="stats_tags_used">Tags</string>
 </resources>

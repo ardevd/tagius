@@ -178,6 +178,13 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.action_stats -> {
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, net.ardevd.tagius.features.stats.ui.StatsFragment())
+                            .addToBackStack(null)
+                            .commit()
+                        true
+                    }
                     R.id.action_settings -> {
                         showSettingsSheet()
                         true
