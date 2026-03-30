@@ -34,6 +34,9 @@
     <string name="cd_start_new_timer">Start a new timer</string>
     <string name="cd_range_filter">Time range filter options</string>
 
+    <string name="records_stats">Stats</string>
+    <string name="records_stats_desc">View Statistics</string>
+
     <string name="settings_account_settings">Account Settings</string>
     <string name="settings_connected_to">Connected to</string>
     <string name="settings_log_out">Log Out</string>

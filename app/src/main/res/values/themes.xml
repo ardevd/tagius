@@ -25,4 +25,10 @@
     <style name="Theme.Tagius.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Tagius.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="StatsColumnChartStyle">
+        <item name="layers">column</item>
+        <item name="showBottomAxis">true</item>
+        <item name="showStartAxis">true</item>
+    </style>
 </resources>
