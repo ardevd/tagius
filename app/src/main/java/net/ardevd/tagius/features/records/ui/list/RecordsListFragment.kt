@@ -51,6 +51,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     private val binding get() = _binding!!
 
+    private var scrollToTopObserver: RecyclerView.AdapterDataObserver? = null
+
 
     private val viewModel: RecordsViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -230,13 +232,15 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             adapter = recordsAdapter
         }
 
-        recordsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        val observer = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
-                    binding.recyclerView.scrollToPosition(0)
+                    _binding?.recyclerView?.scrollToPosition(0)
                 }
             }
-        })
+        }
+        scrollToTopObserver = observer
+        recordsAdapter.registerAdapterDataObserver(observer)
     }
 
     private fun observeState() {
@@ -295,6 +299,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        scrollToTopObserver?.let { recordsAdapter.unregisterAdapterDataObserver(it) }
+        scrollToTopObserver = null
         _binding = null
     }
 
