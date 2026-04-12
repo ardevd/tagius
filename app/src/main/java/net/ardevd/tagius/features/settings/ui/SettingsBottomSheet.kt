@@ -45,16 +45,23 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
 
         // Dynamic Colors toggle
         val tokenManager = TokenManager(requireContext())
+        
+        val listener = android.widget.CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                tokenManager.setDynamicColorsEnabled(isChecked)
+                requireActivity().recreate()
+            }
+        }
+        
+        binding.dynamicColorsSwitch.isEnabled = false
+        binding.dynamicColorsSwitch.setOnCheckedChangeListener(listener)
+
         viewLifecycleOwner.lifecycleScope.launch {
             val isEnabled = tokenManager.dynamicColorsFlow.first()
+            binding.dynamicColorsSwitch.setOnCheckedChangeListener(null)
             binding.dynamicColorsSwitch.isChecked = isEnabled
-
-            binding.dynamicColorsSwitch.setOnCheckedChangeListener { _, isChecked ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    tokenManager.setDynamicColorsEnabled(isChecked)
-                    requireActivity().recreate()
-                }
-            }
+            binding.dynamicColorsSwitch.setOnCheckedChangeListener(listener)
+            binding.dynamicColorsSwitch.isEnabled = true
         }
     }
 
