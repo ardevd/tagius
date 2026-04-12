@@ -254,6 +254,18 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                             binding.errorText.isVisible = false
                             binding.emptyText.isVisible = state.records.isEmpty()
                             recordsAdapter.submitList(state.records)
+
+                            val runningRecord = state.records.firstOrNull { it.startTime == it.endTime }
+                            if (runningRecord != null) {
+                                net.ardevd.tagius.features.background.TimerService.startService(
+                                    requireContext(),
+                                    runningRecord.description,
+                                    runningRecord.startTime,
+                                    runningRecord.key
+                                )
+                            } else {
+                                net.ardevd.tagius.features.background.TimerService.stopService(requireContext())
+                            }
                         }
 
                         is RecordsUiState.Error -> {
