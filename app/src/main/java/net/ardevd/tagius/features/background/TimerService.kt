@@ -109,11 +109,7 @@ class TimerService : Service() {
             }
             .build()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-        } else {
-            startForeground(NOTIFICATION_ID, notification)
-        }
+        startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
     }
 
     private fun stopTimer(key: String, description: String, startTime: Long) {
@@ -150,11 +146,7 @@ class TimerService : Service() {
                 putExtra(EXTRA_START_TIME, startTime)
                 putExtra(EXTRA_KEY, key)
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
-            }
+            context.startForegroundService(intent)
         }
 
         fun stopService(context: Context) {
