@@ -7,6 +7,5 @@
 -->
 <full-backup-content>
     <exclude domain="sharedpref" path="."/>
-    <exclude domain="root" path="datastore"/>
     <exclude domain="file" path="datastore"/>
 </full-backup-content>
