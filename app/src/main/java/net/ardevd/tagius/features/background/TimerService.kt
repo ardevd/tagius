@@ -91,6 +91,18 @@ class TimerService : Service() {
             .setWhen(startTime * 1000L)
             .setContentIntent(pendingIntent)
             .addAction(R.drawable.ic_stop, getString(R.string.record_stop), stopPendingIntent)
+            .apply {
+                try {
+                    // Try to use the NotificationCompat extension if available
+                    val method = this::class.java.getMethod("setRequestPromotedOngoing", Boolean::class.javaPrimitiveType)
+                    method.invoke(this, true)
+                } catch (e: Exception) {
+                    // Fallback to setting extras manually
+                    val extras = android.os.Bundle()
+                    extras.putBoolean("android.app.extra.REQUEST_PROMOTED_ONGOING", true)
+                    addExtras(extras)
+                }
+            }
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
