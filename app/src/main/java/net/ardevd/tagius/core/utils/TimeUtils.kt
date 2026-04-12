@@ -42,13 +42,35 @@ object DateRanges {
         return Pair(t1, t2)
     }
 }
+private var cachedLocale: java.util.Locale? = null
+private var cachedTimeFormatter: DateTimeFormatter? = null
+private var cachedDateFormatter: DateTimeFormatter? = null
+
 private val timeFormatter: DateTimeFormatter
-    get() = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
+    get() {
+        val currentLocale = java.util.Locale.getDefault()
+        if (cachedLocale != currentLocale || cachedTimeFormatter == null) {
+            cachedLocale = currentLocale
+            cachedTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", currentLocale)
+                .withZone(ZoneId.systemDefault())
+            cachedDateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d", currentLocale)
+                .withZone(ZoneId.systemDefault())
+        }
+        return cachedTimeFormatter!!
+    }
 
 private val dateFormatter: DateTimeFormatter
-    get() = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
+    get() {
+        val currentLocale = java.util.Locale.getDefault()
+        if (cachedLocale != currentLocale || cachedDateFormatter == null) {
+            cachedLocale = currentLocale
+            cachedTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", currentLocale)
+                .withZone(ZoneId.systemDefault())
+            cachedDateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d", currentLocale)
+                .withZone(ZoneId.systemDefault())
+        }
+        return cachedDateFormatter!!
+    }
 
 /**
  * Extension function to convert a Unix timestamp (Seconds) to a time string.
