@@ -12,6 +12,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
@@ -82,6 +83,10 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRecordsListBinding.bind(view)
+
+        setFragmentResultListener(SettingsBottomSheet.REQUEST_LOGOUT) { _, _ ->
+            performLogout()
+        }
 
         setupRecyclerView()
         observeState()
@@ -198,9 +203,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     }
 
     private fun showSettingsSheet() {
-        val sheet = SettingsBottomSheet {
-            performLogout()
-        }
+        val sheet = SettingsBottomSheet()
         sheet.show(parentFragmentManager, SettingsBottomSheet.TAG)
     }
 

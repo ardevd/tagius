@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import net.ardevd.tagius.BuildConfig
 import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.setFragmentResult
+import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.databinding.FragmentSettingsBinding
 
-class SettingsBottomSheet(
-    private val onLogout: () -> Unit
-) : BottomSheetDialogFragment() {
+class SettingsBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
@@ -40,11 +40,32 @@ class SettingsBottomSheet(
         // Handle Logout
         binding.logoutButton.setOnClickListener {
             dismiss()
-            onLogout()
+            setFragmentResult(REQUEST_LOGOUT, bundleOf())
+        }
+
+        // Dynamic Colors toggle
+        val tokenManager = TokenManager(requireContext())
+        
+        binding.dynamicColorsSwitch.isEnabled = false
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val isEnabled = tokenManager.dynamicColorsFlow.first()
+            binding.dynamicColorsSwitch.isChecked = isEnabled
+            binding.dynamicColorsSwitch.isEnabled = true
+            
+            binding.dynamicColorsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (buttonView.isPressed) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        tokenManager.setDynamicColorsEnabled(isChecked)
+                        requireActivity().recreate()
+                    }
+                }
+            }
         }
     }
 
     companion object {
         const val TAG = "SettingsBottomSheet"
+        const val REQUEST_LOGOUT = "request_logout"
     }
 }

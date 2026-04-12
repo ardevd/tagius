@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -21,6 +22,7 @@ class TokenManager(private val context: Context) {
         private val KEY_SERVER_URL = stringPreferencesKey("server_url")
         private val KEY_LAST_DESCRIPTION = stringPreferencesKey("last_description")
         private val KEY_LAST_ZOMBIE_ID = stringPreferencesKey("last_zombie_id")
+        private val KEY_DYNAMIC_COLORS = booleanPreferencesKey("dynamic_colors")
         private const val DEFAULT_URL = "https://timetagger.app/"
 
     }
@@ -46,6 +48,21 @@ class TokenManager(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[KEY_LAST_DESCRIPTION] = description
         }
+    }
+
+    val dynamicColorsFlow: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[KEY_DYNAMIC_COLORS] ?: false
+        }
+
+    suspend fun setDynamicColorsEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_DYNAMIC_COLORS] = enabled
+        }
+    }
+
+    fun isDynamicColorsEnabledBlocking(): Boolean = runBlocking {
+        dynamicColorsFlow.first()
     }
 
     val authTokenFlow: Flow<String?> = context.dataStore.data
