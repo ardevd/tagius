@@ -35,6 +35,7 @@
     <string name="cd_range_filter">Time range filter options</string>
 
     <string name="records_stats">Stats</string>
+    <string name="title_statistics">Statistics</string>
     <string name="records_stats_desc">View Statistics</string>
     <string name="stats_tags_used">Tags</string>
     <string name="stats_duration_per_day">Duration per Day</string>

@@ -55,6 +55,7 @@
     <string name="error_stop_record">Kunne ikke stanse timer</string>
     <string name="error_update_failed">Oppdatering feilet</string>
     <string name="records_stats">Stats</string>
+    <string name="title_statistics">Statistikk</string>
     <string name="records_stats_desc">Se Statistikk</string>
     <string name="stats_tags_used">Tags</string>
     <string name="notification_channel_active_timer">Aktiv Timer</string>
