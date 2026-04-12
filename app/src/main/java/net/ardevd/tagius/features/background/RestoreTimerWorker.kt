@@ -31,7 +31,7 @@ class RestoreTimerWorker(
 
             if (response.records.isNotEmpty()) {
                 val record = response.records[0]
-                TimerService.startService(
+                TimerNotificationManager.showTimerNotification(
                     applicationContext,
                     record.description,
                     record.startTime,
