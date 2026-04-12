@@ -3,7 +3,10 @@ package net.ardevd.tagius.features.background
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 
@@ -20,11 +23,20 @@ class TimerActionReceiver : BroadcastReceiver() {
                 .putLong(TimerNotificationManager.EXTRA_START_TIME, startTime)
                 .build()
 
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
             val workRequest = OneTimeWorkRequestBuilder<StopTimerWorker>()
+                .setConstraints(constraints)
                 .setInputData(data)
                 .build()
 
-            WorkManager.getInstance(context).enqueue(workRequest)
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                "StopTimer_$key",
+                ExistingWorkPolicy.REPLACE,
+                workRequest
+            )
         }
     }
 }
