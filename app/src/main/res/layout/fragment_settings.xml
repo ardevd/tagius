@@ -64,6 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="24dp"
+        android:drawableStart="@drawable/ic_color"
+        android:drawablePadding="16dp"
+        app:drawableTint="?attr/colorPrimary"
         android:text="@string/settings_dynamic_colors"
         android:textAppearance="?attr/textAppearanceBodyLarge"
         app:layout_constraintTop_toBottomOf="@id/serverCard" />
