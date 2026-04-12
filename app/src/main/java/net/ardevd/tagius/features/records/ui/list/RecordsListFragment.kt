@@ -37,7 +37,7 @@ import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
 import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.MainActivity
-import net.ardevd.tagius.features.background.TimerService
+import net.ardevd.tagius.features.background.TimerNotificationManager
 import net.ardevd.tagius.features.background.ZombieCheckWorker
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
@@ -274,14 +274,14 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
                             val runningRecord = state.records.firstOrNull { it.startTime == it.endTime }
                             if (runningRecord != null) {
-                                TimerService.startService(
+                                TimerNotificationManager.showTimerNotification(
                                     requireContext(),
                                     runningRecord.description,
                                     runningRecord.startTime,
                                     runningRecord.key
                                 )
                             } else {
-                                TimerService.stopService(requireContext())
+                                TimerNotificationManager.cancelTimerNotification(requireContext())
                             }
                         }
 
