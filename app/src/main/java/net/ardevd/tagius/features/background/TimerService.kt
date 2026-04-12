@@ -42,6 +42,10 @@ class TimerService : Service() {
                 val startTime = intent.getLongExtra(EXTRA_START_TIME, 0L)
                 stopTimer(key, description, startTime)
             }
+            else -> {
+                stopSelf(startId)
+                START_NOT_STICKY
+            }
         }
 
         return START_STICKY
