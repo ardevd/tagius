@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -50,6 +51,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     private var _binding: FragmentRecordsListBinding? = null
 
     private val binding get() = _binding!!
+
+    private var scrollToTopObserver: RecyclerView.AdapterDataObserver? = null
 
 
     private val viewModel: RecordsViewModel by viewModels {
@@ -231,6 +234,16 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             layoutManager = LinearLayoutManager(context)
             adapter = recordsAdapter
         }
+
+        val observer = object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    _binding?.recyclerView?.scrollToPosition(0)
+                }
+            }
+        }
+        scrollToTopObserver = observer
+        recordsAdapter.registerAdapterDataObserver(observer)
     }
 
     private fun observeState() {
@@ -289,6 +302,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        scrollToTopObserver?.let { recordsAdapter.unregisterAdapterDataObserver(it) }
+        scrollToTopObserver = null
         _binding = null
     }
 
