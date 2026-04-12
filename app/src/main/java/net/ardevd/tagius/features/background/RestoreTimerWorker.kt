@@ -3,6 +3,7 @@ package net.ardevd.tagius.features.background
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.flow.first
 import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 
@@ -16,7 +17,7 @@ class RestoreTimerWorker(
             val tokenManager = TokenManager(applicationContext)
             
             // If there's no valid session, just return
-            if (tokenManager.getTokenBlocking().isNullOrBlank()) {
+            if (tokenManager.authTokenFlow.first().isNullOrBlank()) {
                 return Result.success()
             }
 
