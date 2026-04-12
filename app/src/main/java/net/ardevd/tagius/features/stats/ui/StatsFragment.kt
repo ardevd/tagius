@@ -1,5 +1,10 @@
 package net.ardevd.tagius.features.stats.ui
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -72,6 +77,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
         setupFilterChips()
         observeState()
+        setupMenu()
     }
 
     private fun observeState() {
@@ -192,6 +198,30 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
                     binding.chipWeek.isChecked = true
                 }
             }
+        }
+    }
+
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId == android.R.id.home) {
+                    parentFragmentManager.popBackStack()
+                    return true
+                }
+                return false
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            title = getString(R.string.title_statistics)
+            setDisplayHomeAsUpEnabled(true)
         }
     }
 

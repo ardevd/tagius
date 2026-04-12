@@ -310,6 +310,10 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     override fun onResume() {
         super.onResume()
         requireActivity().findViewById<View>(R.id.topAppBar).isVisible = true
+        (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.apply {
+            title = getString(R.string.app_name)
+            setDisplayHomeAsUpEnabled(false)
+        }
     }
 
     private fun setupFilterChips() {
