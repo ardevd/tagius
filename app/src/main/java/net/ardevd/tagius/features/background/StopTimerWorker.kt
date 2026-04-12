@@ -29,11 +29,15 @@ class StopTimerWorker(
                 description = description,
                 serverTime = 0.0
             )
-            repository.stopRecord(record)
-            
-            // Cancel notification after successful stop
-            TimerNotificationManager.cancelTimerNotification(applicationContext)
-            Result.success()
+            val stopSuccessful = repository.stopRecord(record)
+
+            if (stopSuccessful) {
+                // Cancel notification after confirmed successful stop
+                TimerNotificationManager.cancelTimerNotification(applicationContext)
+                Result.success()
+            } else {
+                Result.retry()
+            }
         } catch (e: Exception) {
             Result.retry()
         }
