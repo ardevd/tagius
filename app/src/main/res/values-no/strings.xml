@@ -30,7 +30,8 @@
     <string name="cd_range_filter">Alternativer for tidsfilter</string>
     <string name="stats_duration_per_day">Varighet per dag</string>
     <string name="settings_account_settings">Kontoinnstillinger</string>
-    <string name="settings_connected_to">Koblet til</string>
+    <string name="settings_connected_to">Tilkoblet</string>
+    <string name="settings_dynamic_colors">Dynamisk Tema</string>
     <string name="settings_log_out">Logg Ut</string>
     <string name="settings_settings">Innstillinger</string>
     <string name="error_invalid_token">Ugyldig API token angitt</string>
