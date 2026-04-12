@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -228,6 +229,14 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             layoutManager = LinearLayoutManager(context)
             adapter = recordsAdapter
         }
+
+        recordsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    binding.recyclerView.scrollToPosition(0)
+                }
+            }
+        })
     }
 
     private fun observeState() {
