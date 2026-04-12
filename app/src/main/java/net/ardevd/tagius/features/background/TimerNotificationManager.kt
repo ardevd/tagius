@@ -11,7 +11,7 @@ import net.ardevd.tagius.R
 
 object TimerNotificationManager {
 
-    const val ACTION_STOP = "ACTION_STOP"
+    const val ACTION_STOP = "net.ardevd.tagius.features.background.action.STOP"
     const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
     const val EXTRA_START_TIME = "EXTRA_START_TIME"
     const val EXTRA_KEY = "EXTRA_KEY"
