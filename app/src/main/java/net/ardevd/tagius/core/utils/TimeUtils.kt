@@ -42,11 +42,13 @@ object DateRanges {
         return Pair(t1, t2)
     }
 }
-private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-    .withZone(ZoneId.systemDefault())
+private val timeFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+        .withZone(ZoneId.systemDefault())
 
-private val dateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
-    .withZone(ZoneId.systemDefault())
+private val dateFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
+        .withZone(ZoneId.systemDefault())
 
 /**
  * Extension function to convert a Unix timestamp (Seconds) to a time string.
