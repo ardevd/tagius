@@ -70,4 +70,7 @@
     <string name="notification_channel_timer_alerts">Time Alerts</string>
     <string name="notification_channel_active_timer">Active Timer</string>
     <string name="timer_running">Timer Running</string>
+    <string name="weekly_summary_title">Weekly Summary</string>
+    <string name="weekly_summary_desc">You tracked %1$s across %2$d tags this week.</string>
+    <string name="notification_channel_weekly_summary">Weekly Summary</string>
 </resources>
