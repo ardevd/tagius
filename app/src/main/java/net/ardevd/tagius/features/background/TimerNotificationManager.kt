@@ -1,6 +1,7 @@
 package net.ardevd.tagius.features.background
 
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -19,13 +20,20 @@ object TimerNotificationManager {
 
     fun showTimerNotification(context: Context, description: String, startTime: Long, key: String) {
         val channelId = "active_timer"
+        val groupId = "timers"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannelGroup(
+            NotificationChannelGroup(groupId, context.getString(R.string.notification_group_timers))
+        )
 
         val channel = NotificationChannel(
             channelId,
             context.getString(R.string.notification_channel_active_timer),
             NotificationManager.IMPORTANCE_LOW
-        )
+        ).apply {
+            group = groupId
+        }
         notificationManager.createNotificationChannel(channel)
 
         val intent = Intent(context, MainActivity::class.java).apply {

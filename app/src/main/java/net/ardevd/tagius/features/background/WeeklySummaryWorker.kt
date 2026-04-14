@@ -1,6 +1,7 @@
 package net.ardevd.tagius.features.background
 
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -72,14 +73,21 @@ class WeeklySummaryWorker(
 
     private fun sendNotification(durationString: String, tagsCount: Int) {
         val channelId = "weekly_summary"
+        val groupId = "background_tasks"
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannelGroup(
+            NotificationChannelGroup(groupId, applicationContext.getString(R.string.notification_group_background))
+        )
 
         val channel = NotificationChannel(
             channelId,
             applicationContext.getString(R.string.notification_channel_weekly_summary),
             NotificationManager.IMPORTANCE_DEFAULT
-        )
+        ).apply {
+            group = groupId
+        }
         notificationManager.createNotificationChannel(channel)
         
         val descText = applicationContext.getString(R.string.weekly_summary_desc, durationString, tagsCount)
