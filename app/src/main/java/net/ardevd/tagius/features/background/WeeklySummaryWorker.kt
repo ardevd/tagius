@@ -10,6 +10,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import net.ardevd.tagius.MainActivity
 import net.ardevd.tagius.R
+import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.core.ui.tagRegexPattern
 
@@ -20,6 +21,12 @@ class WeeklySummaryWorker(
 
     override suspend fun doWork(): Result {
         return try {
+            val tokenManager = TokenManager(applicationContext)
+            val token = tokenManager.getTokenBlocking()
+            if (token.isNullOrBlank()) {
+                return Result.success()
+            }
+
             val apiService = RetrofitClient.getInstance(applicationContext)
 
             val now = System.currentTimeMillis() / 1000
@@ -52,6 +59,12 @@ class WeeklySummaryWorker(
             }
 
             Result.success()
+        } catch (e: retrofit2.HttpException) {
+            if (e.code() == 401 || e.code() == 403) {
+                Result.success() // Or failure(), but avoid retry for auth errors
+            } else {
+                Result.retry()
+            }
         } catch (_: Exception) {
             Result.retry()
         }
