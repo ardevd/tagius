@@ -60,4 +60,7 @@
     <string name="stats_tags_used">Tags</string>
     <string name="notification_channel_active_timer">Aktiv Timer</string>
     <string name="timer_running">Timer Pågår</string>
+    <string name="weekly_summary_title">Ukentlig Oppsumering</string>
+    <string name="weekly_summary_desc">Du tracket %1$s på tvers av %2$d tagger denne uken.</string>
+    <string name="notification_channel_weekly_summary">Ukently Oppsummering</string>
 </resources>

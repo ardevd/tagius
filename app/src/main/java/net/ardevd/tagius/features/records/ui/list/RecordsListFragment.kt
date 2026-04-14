@@ -39,11 +39,13 @@ import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.MainActivity
 import net.ardevd.tagius.features.background.TimerNotificationManager
 import net.ardevd.tagius.features.background.ZombieCheckWorker
+import net.ardevd.tagius.features.background.WeeklySummaryWorker
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
 import net.ardevd.tagius.features.records.viewmodel.RecordsViewModel
 import net.ardevd.tagius.features.settings.ui.SettingsBottomSheet
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
@@ -367,6 +369,24 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     private fun stopBackgroundWorkers() {
         WorkManager.getInstance(requireContext()).cancelUniqueWork("ZombieCheck")
+        WorkManager.getInstance(requireContext()).cancelUniqueWork("WeeklySummary")
+    }
+
+    private fun calculateInitialDelayForSundayEvening(): Long {
+        val now = Calendar.getInstance()
+        val nextSunday = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+            set(Calendar.HOUR_OF_DAY, 20)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        if (now.after(nextSunday)) {
+            nextSunday.add(Calendar.DAY_OF_MONTH, 7)
+        }
+
+        return nextSunday.timeInMillis - now.timeInMillis
     }
 
     private fun setupBackgroundWorkers() {
@@ -387,6 +407,24 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             "ZombieCheck",
             ExistingPeriodicWorkPolicy.KEEP,
             zombieRequest
+        )
+        
+        val initialDelay = calculateInitialDelayForSundayEvening()
+        val weeklySummaryFlexIntervalHours = 4L
+
+        // Define the Weekly Summary Request (Run every 7 days within a Sunday evening window)
+        val weeklySummaryRequest = PeriodicWorkRequestBuilder<WeeklySummaryWorker>(
+            7, TimeUnit.DAYS,
+            weeklySummaryFlexIntervalHours, TimeUnit.HOURS
+        )
+            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "WeeklySummary",
+            ExistingPeriodicWorkPolicy.KEEP,
+            weeklySummaryRequest
         )
     }
 }
