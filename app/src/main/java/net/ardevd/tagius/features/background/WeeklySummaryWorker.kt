@@ -33,7 +33,10 @@ class WeeklySummaryWorker(
 
             for (record in response.records) {
                 val end = if (record.startTime == record.endTime) now else record.endTime
-                totalSeconds += (end - record.startTime)
+                val duration = end - record.startTime
+                if (duration > 0) {
+                    totalSeconds += duration
+                }
                 
                 val matcher = tagRegexPattern.matcher(record.description)
                 while (matcher.find()) {
