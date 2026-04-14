@@ -40,7 +40,7 @@ class WeeklySummaryWorker(
                 
                 val matcher = tagRegexPattern.matcher(record.description)
                 while (matcher.find()) {
-                    tags.add(matcher.group()?.lowercase() ?: "")
+                    tags.add(matcher.group().lowercase())
                 }
             }
 
