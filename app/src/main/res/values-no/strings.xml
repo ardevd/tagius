@@ -63,4 +63,5 @@
     <string name="weekly_summary_title">Ukentlig Oppsumering</string>
     <string name="weekly_summary_desc">Du tracket %1$s på tvers av %2$d tagger denne uken.</string>
     <string name="notification_channel_weekly_summary">Ukently Oppsummering</string>
+    <string name="notification_group_background">Bakgrunnsjobber</string>
 </resources>

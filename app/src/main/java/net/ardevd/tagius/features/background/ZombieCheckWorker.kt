@@ -1,6 +1,7 @@
 package net.ardevd.tagius.features.background
 
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -54,8 +55,13 @@ class ZombieCheckWorker(
 
     private fun sendNotification(hours: Int) {
         val channelId = "zombie_alert"
+        val groupId = "background_tasks"
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannelGroup(
+            NotificationChannelGroup(groupId, applicationContext.getString(R.string.notification_group_background))
+        )
 
         // Create Channel (Safe to call repeatedly)
         val channel =
@@ -63,7 +69,9 @@ class ZombieCheckWorker(
                 channelId,
                 applicationContext.getString(R.string.notification_channel_timer_alerts),
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                group = groupId
+            }
         notificationManager.createNotificationChannel(channel)
         val descText = applicationContext.getString(R.string.zombie_still_working_desc, hours)
 
