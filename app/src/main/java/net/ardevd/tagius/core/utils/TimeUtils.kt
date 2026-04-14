@@ -42,13 +42,13 @@ object DateRanges {
         return Pair(t1, t2)
     }
 }
-private var cachedLocale: java.util.Locale? = null
+private var cachedLocale: Locale? = null
 private var cachedTimeFormatter: DateTimeFormatter? = null
 private var cachedDateFormatter: DateTimeFormatter? = null
 
 private val timeFormatter: DateTimeFormatter
     get() {
-        val currentLocale = java.util.Locale.getDefault()
+        val currentLocale = Locale.getDefault()
         if (cachedLocale != currentLocale || cachedTimeFormatter == null) {
             cachedLocale = currentLocale
             cachedTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", currentLocale)
@@ -61,7 +61,7 @@ private val timeFormatter: DateTimeFormatter
 
 private val dateFormatter: DateTimeFormatter
     get() {
-        val currentLocale = java.util.Locale.getDefault()
+        val currentLocale = Locale.getDefault()
         if (cachedLocale != currentLocale || cachedDateFormatter == null) {
             cachedLocale = currentLocale
             cachedTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", currentLocale)
