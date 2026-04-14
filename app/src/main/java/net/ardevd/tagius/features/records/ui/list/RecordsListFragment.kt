@@ -410,9 +410,13 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         )
         
         val initialDelay = calculateInitialDelayForSundayEvening()
+        val weeklySummaryFlexIntervalHours = 4L
 
-        // Define the Weekly Summary Request (Run every 7 days)
-        val weeklySummaryRequest = PeriodicWorkRequestBuilder<WeeklySummaryWorker>(7, TimeUnit.DAYS)
+        // Define the Weekly Summary Request (Run every 7 days within a Sunday evening window)
+        val weeklySummaryRequest = PeriodicWorkRequestBuilder<WeeklySummaryWorker>(
+            7, TimeUnit.DAYS,
+            weeklySummaryFlexIntervalHours, TimeUnit.HOURS
+        )
             .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
             .setConstraints(constraints)
             .build()
