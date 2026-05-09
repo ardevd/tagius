@@ -19,7 +19,7 @@ object TimerNotificationManager {
     private const val NOTIFICATION_ID = 1002
 
     fun showTimerNotification(context: Context, description: String, startTime: Long, key: String) {
-        val channelId = "active_timer"
+        val channelId = "active_timer_v2"
         val groupId = "timers"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -30,7 +30,7 @@ object TimerNotificationManager {
         val channel = NotificationChannel(
             channelId,
             context.getString(R.string.notification_channel_active_timer),
-            NotificationManager.IMPORTANCE_LOW
+            NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
             group = groupId
         }
@@ -63,7 +63,7 @@ object TimerNotificationManager {
             .setSmallIcon(R.drawable.ic_timer)
             .setContentTitle(context.getString(R.string.timer_running))
             .setContentText(description.ifBlank { context.getString(R.string.records_no_description) })
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
             .setOngoing(true)
             .setUsesChronometer(true)
             .setWhen(startTime * 1000L)
