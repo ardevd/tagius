@@ -63,7 +63,6 @@ object TimerNotificationManager {
             .setSmallIcon(R.drawable.ic_timer)
             .setContentTitle(context.getString(R.string.timer_running))
             .setContentText(description.ifBlank { context.getString(R.string.records_no_description) })
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
             .setOngoing(true)
             .setUsesChronometer(true)
