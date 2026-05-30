@@ -18,6 +18,9 @@ interface TimeTaggerApiService {
     @GET("settings")
     suspend fun getSettings(): Any
 
+    @GET("version")
+    suspend fun getVersion(): net.ardevd.tagius.core.data.TimeTaggerVersionResponse
+
     @GET("records")
     suspend fun getRecords(
         @Query("timerange") timerange: String,

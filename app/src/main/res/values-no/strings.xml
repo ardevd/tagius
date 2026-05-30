@@ -31,6 +31,7 @@
     <string name="stats_duration_per_day">Varighet per dag</string>
     <string name="settings_account_settings">Kontoinnstillinger</string>
     <string name="settings_connected_to">Tilkoblet</string>
+    <string name="settings_server_version">Serverversjon: %1$s</string>
     <string name="settings_dynamic_colors">Dynamisk Tema</string>
     <string name="settings_log_out">Logg Ut</string>
     <string name="settings_settings">Innstillinger</string>
