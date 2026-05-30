@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.ardevd.tagius.core.data.TokenManager
+import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.databinding.FragmentSettingsBinding
 
 class SettingsBottomSheet : BottomSheetDialogFragment() {
@@ -35,6 +36,15 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val url = TokenManager(requireContext()).serverUrlFlow.first()
             binding.serverUrlText.text = url
+
+            try {
+                val apiService = RetrofitClient.getInstance(requireContext())
+                val versionResponse = apiService.getVersion()
+                binding.serverVersionText.text = getString(net.ardevd.tagius.R.string.settings_server_version, versionResponse.version)
+                binding.serverVersionText.visibility = View.VISIBLE
+            } catch (e: Exception) {
+                binding.serverVersionText.visibility = View.GONE
+            }
         }
 
         // Handle Logout
