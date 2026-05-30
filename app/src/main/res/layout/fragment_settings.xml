@@ -63,6 +63,7 @@
                 android:layout_marginTop="4dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone"
                 tools:text="Server Version: 1.0.0" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
