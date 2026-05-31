@@ -17,6 +17,7 @@
     <string name="login_server_url_hint">Server URL</string>
     <string name="login_server_url_default" translatable="false">https://timetagger.app</string>
     <string name="login_api_token">API Token</string>
+    <string name="login_token_helper">Found in Web App &gt; Account &gt; API</string>
     <string name="login_connect">Connect</string>
 
     <string name="records_today">Today</string>
