@@ -54,7 +54,7 @@ object TimerNotificationManager {
         }
         val stopPendingIntent = PendingIntent.getBroadcast(
             context,
-            1,
+            key.hashCode(),
             stopIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
