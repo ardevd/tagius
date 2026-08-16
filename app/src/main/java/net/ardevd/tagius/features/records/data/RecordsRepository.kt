@@ -10,14 +10,15 @@ class RecordsRepository(service: TimeTaggerApiService) {
 
     private val apiService = service
 
-    suspend fun startRecord(description: String): Boolean {
+    suspend fun startRecord(description: String, startTime: Long? = null): Boolean {
         val now = System.currentTimeMillis() / 1000
+        val resolvedStartTime = startTime ?: now
         val newKey = KeyGenerator.generateKey()
 
         val newRecord = TimeTaggerRecord(
             key = newKey,
-            startTime = now,
-            endTime = now,
+            startTime = resolvedStartTime,
+            endTime = resolvedStartTime,
             modifiedTime = now,
             description = description,
             serverTime = 0.0
