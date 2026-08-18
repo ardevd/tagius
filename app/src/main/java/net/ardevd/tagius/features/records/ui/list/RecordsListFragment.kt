@@ -151,8 +151,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val bottomSheet = AddRecordBottomSheet(
             initialDescription = description,
             suggestedTags = topTags
-        ) { description ->
-            viewModel.startTimer(description)
+        ) { timerDescription, startTime ->
+            viewModel.startTimer(timerDescription, startTime)
         }
         bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
     }

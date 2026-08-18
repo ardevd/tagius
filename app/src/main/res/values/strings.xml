@@ -5,6 +5,13 @@
     <string name="timer_desc_hint">What are you working on?</string>
     <string name="timer_desc_helper">Tip: Use #tags to organize your time</string>
     <string name="timer_start_timer">Start Timer</string>
+    <string name="timer_start_now">Now</string>
+    <string name="timer_start_earlier">Earlier</string>
+    <string name="timer_start_time">Starting time</string>
+    <string name="timer_select_start_date">Select start date</string>
+    <string name="timer_select_start_time">Select start time</string>
+    <string name="timer_description_required">Please enter a description</string>
+    <string name="error_start_time_future">Starting time cannot be in the future</string>
 
     <string name="timer_edit">Edit Record</string>
     <string name="timer_edit_start_hint">Start</string>

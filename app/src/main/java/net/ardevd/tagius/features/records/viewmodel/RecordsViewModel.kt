@@ -49,9 +49,9 @@ class RecordsViewModel(
             initialValue = ""
         )
 
-    fun startTimer(description: String) {
+    fun startTimer(description: String, startTime: Long? = null) {
         viewModelScope.launch {
-            val success = repository.startRecord(description)
+            val success = repository.startRecord(description, startTime)
 
             if (success) {
                 // Store description

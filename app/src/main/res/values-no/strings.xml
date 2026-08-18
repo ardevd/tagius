@@ -5,6 +5,13 @@
     <string name="timer_desc_hint">Hva jobber du med?</string>
     <string name="timer_desc_helper">Tips: Bruk #tags for å organisere tiden din</string>
     <string name="timer_start_timer">Start Timer</string>
+    <string name="timer_start_now">Nå</string>
+    <string name="timer_start_earlier">Tidligere</string>
+    <string name="timer_start_time">Starttid</string>
+    <string name="timer_select_start_date">Velg startdato</string>
+    <string name="timer_select_start_time">Velg starttid</string>
+    <string name="timer_description_required">Skriv inn en beskrivelse</string>
+    <string name="error_start_time_future">Starttiden kan ikke være i fremtiden</string>
     <string name="timer_edit">Rediger Oppføring</string>
     <string name="timer_edit_start_hint">Start</string>
     <string name="timer_edit_end_hint">Avslutt</string>
