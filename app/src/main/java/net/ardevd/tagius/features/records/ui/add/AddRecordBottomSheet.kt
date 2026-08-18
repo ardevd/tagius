@@ -75,11 +75,12 @@ class AddRecordBottomSheet(
             val startsEarlier = binding.startEarlierButton.isChecked
             val now = System.currentTimeMillis() / 1000
 
-            when {
                 description.isEmpty() -> {
                     binding.inputLayout.error = getString(R.string.timer_description_required)
+                    binding.startTimeInputLayout.error = null
                 }
                 startsEarlier && selectedStartTime > now -> {
+                    binding.inputLayout.error = null
                     binding.startTimeInputLayout.error = getString(R.string.error_start_time_future)
                 }
                 else -> {
