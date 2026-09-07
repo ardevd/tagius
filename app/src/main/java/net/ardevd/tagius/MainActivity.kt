@@ -19,7 +19,6 @@ import net.ardevd.tagius.features.auth.ui.LoginFragment
 import net.ardevd.tagius.features.records.ui.list.RecordsListFragment
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
-
         // Check for Share Intent
         if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
             val sharedText = extractSharedText(intent)
@@ -54,7 +52,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun triggerAddSheet(intent: Intent, description: String?) {
+    private fun triggerAddSheet(
+        intent: Intent,
+        description: String?,
+    ) {
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as? RecordsListFragment
 
@@ -83,24 +84,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.topAppBar)
-        lifecycleScope.launch {
-            val token = tokenManager.authTokenFlow.first()
-            if (savedInstanceState == null) {
-                if (!token.isNullOrBlank()) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, RecordsListFragment())
-                        .commit()
-                } else {
-                    // Not logged in? Go to Login
-                    binding.topAppBar.isVisible = false
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, LoginFragment())
-                        .commit()
-                }
+        if (savedInstanceState == null) {
+            binding.topAppBar.isVisible = false
+            lifecycleScope.launch {
+                val token = tokenManager.authTokenFlow.first()
+                val destination =
+                    if (token.isNullOrBlank()) {
+                        LoginFragment()
+                    } else {
+                        binding.topAppBar.isVisible = true
+                        RecordsListFragment()
+                    }
+                supportFragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container, destination)
+                    .commit()
             }
-        }
 
-        handleIntent(intent)
+            handleIntent(intent)
+        }
 
         checkAndRequestNotificationPermission()
     }
@@ -114,13 +117,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkAndRequestNotificationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                101
+                101,
             )
         }
     }

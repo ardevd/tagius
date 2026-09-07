@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,18 +27,19 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import net.ardevd.tagius.MainActivity
 import net.ardevd.tagius.R
 import net.ardevd.tagius.core.data.TokenManager
 import net.ardevd.tagius.core.network.RetrofitClient
 import net.ardevd.tagius.core.utils.DateRanges
 import net.ardevd.tagius.databinding.FragmentRecordsListBinding
 import net.ardevd.tagius.features.auth.ui.LoginFragment
-import net.ardevd.tagius.features.records.data.RecordsRepository
-import net.ardevd.tagius.MainActivity
 import net.ardevd.tagius.features.background.TimerNotificationManager
-import net.ardevd.tagius.features.background.ZombieCheckWorker
 import net.ardevd.tagius.features.background.WeeklySummaryWorker
+import net.ardevd.tagius.features.background.ZombieCheckWorker
+import net.ardevd.tagius.features.records.data.RecordsRepository
 import net.ardevd.tagius.features.records.ui.add.AddRecordBottomSheet
 import net.ardevd.tagius.features.records.ui.edit.EditRecordBottomSheet
 import net.ardevd.tagius.features.records.viewmodel.RecordsUiState
@@ -49,13 +49,11 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
-
     private var _binding: FragmentRecordsListBinding? = null
 
     private val binding get() = _binding!!
 
     private var scrollToTopObserver: RecyclerView.AdapterDataObserver? = null
-
 
     private val viewModel: RecordsViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -75,23 +73,23 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         RecordsAdapter(
             onStopClick = { record -> viewModel.stopRecord(record) },
             onItemClick = { record ->
-                val editSheet =
-                    EditRecordBottomSheet(record = record, onSave = { newDesc, newStart, newEnd ->
+                EditRecordBottomSheet
+                    .newInstance(record)
+                    .show(parentFragmentManager, EditRecordBottomSheet.TAG)
+            },
+        )
 
-                        viewModel.updateRecord(record, newDesc, newStart, newEnd)
-                    }, onDelete = {
-                        viewModel.deleteRecord(record)
-                    })
-                editSheet.show(parentFragmentManager, EditRecordBottomSheet.TAG)
-            })
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRecordsListBinding.bind(view)
 
         setFragmentResultListener(SettingsBottomSheet.REQUEST_LOGOUT) { _, _ ->
             performLogout()
         }
+        setupRecordResultListeners()
 
         setupRecyclerView()
         observeState()
@@ -105,14 +103,18 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
         // Get colorPrimary
         requireContext().theme.resolveAttribute(
-            androidx.appcompat.R.attr.colorPrimary, typedValue, true
+            androidx.appcompat.R.attr.colorPrimary,
+            typedValue,
+            true,
         )
 
         val colorPrimary = typedValue.data
 
         // Get colorSurfaceContainer (or colorSurface)
         requireContext().theme.resolveAttribute(
-            com.google.android.material.R.attr.colorSurfaceContainerHigh, typedValue, true
+            com.google.android.material.R.attr.colorSurfaceContainerHigh,
+            typedValue,
+            true,
         )
         val colorSurface = typedValue.data
 
@@ -146,15 +148,40 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         setupBackgroundWorkers()
     }
 
-    private fun showAddSheet(description: String = viewModel.lastDescription.value) {
-        val topTags = viewModel.getTopTags(5)
-        val bottomSheet = AddRecordBottomSheet(
-            initialDescription = description,
-            suggestedTags = topTags
-        ) { timerDescription, startTime ->
-            viewModel.startTimer(timerDescription, startTime)
+    private fun setupRecordResultListeners() {
+        setFragmentResultListener(AddRecordBottomSheet.REQUEST_KEY) { _, result ->
+            val description = result.getString(AddRecordBottomSheet.RESULT_DESCRIPTION).orEmpty()
+            val startTime =
+                result
+                    .getLong(AddRecordBottomSheet.RESULT_START_TIME)
+                    .takeIf { result.getBoolean(AddRecordBottomSheet.RESULT_HAS_START_TIME) }
+            viewModel.startTimer(description, startTime)
         }
-        bottomSheet.show(parentFragmentManager, AddRecordBottomSheet.TAG)
+        setFragmentResultListener(EditRecordBottomSheet.REQUEST_KEY) { _, result ->
+            val record = EditRecordBottomSheet.recordFromResult(result)
+            when (result.getString(EditRecordBottomSheet.RESULT_ACTION)) {
+                EditRecordBottomSheet.ACTION_SAVE -> {
+                    viewModel.updateRecord(
+                        record = record,
+                        newDescription = result.getString(EditRecordBottomSheet.RESULT_DESCRIPTION).orEmpty(),
+                        newStart = result.getLong(EditRecordBottomSheet.RESULT_START_TIME),
+                        newEnd = result.getLong(EditRecordBottomSheet.RESULT_END_TIME),
+                    )
+                }
+
+                EditRecordBottomSheet.ACTION_DELETE -> {
+                    viewModel.deleteRecord(record)
+                }
+            }
+        }
+    }
+
+    private fun showAddSheet(description: String = viewModel.lastDescription.value) {
+        AddRecordBottomSheet
+            .newInstance(
+                initialDescription = description,
+                suggestedTags = viewModel.getTopTags(5),
+            ).show(parentFragmentManager, AddRecordBottomSheet.TAG)
     }
 
     fun openAddSheet(description: String) {
@@ -164,47 +191,62 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     private fun setupMenu() {
         val menuHost = requireActivity()
 
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_records_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.menu_records_list, menu)
 
-                val searchItem = menu.findItem(R.id.action_search)
-                val searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.action_search)
+                    val searchView = searchItem.actionView as SearchView
 
-                searchView.queryHint = context?.getString(R.string.records_search_desc)
+                    searchView.queryHint = context?.getString(R.string.records_search_desc)
 
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        searchView.clearFocus() // Hide keyboard on enter
-                        return true
-                    }
+                    searchView.setOnQueryTextListener(
+                        object : SearchView.OnQueryTextListener {
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                searchView.clearFocus() // Hide keyboard on enter
+                                return true
+                            }
 
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        // Pass text to ViewModel
-                        viewModel.onSearchQueryChanged(newText.orEmpty())
-                        return true
-                    }
-                })
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_stats -> {
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, net.ardevd.tagius.features.stats.ui.StatsFragment())
-                            .addToBackStack(null)
-                            .commit()
-                        true
-                    }
-                    R.id.action_settings -> {
-                        showSettingsSheet()
-                        true
-                    }
-
-                    else -> false
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                // Pass text to ViewModel
+                                viewModel.onSearchQueryChanged(newText.orEmpty())
+                                return true
+                            }
+                        },
+                    )
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.action_stats -> {
+                            parentFragmentManager
+                                .beginTransaction()
+                                .replace(
+                                    R.id.fragment_container,
+                                    net.ardevd.tagius.features.stats.ui
+                                        .StatsFragment(),
+                                ).addToBackStack(null)
+                                .commit()
+                            true
+                        }
+
+                        R.id.action_settings -> {
+                            showSettingsSheet()
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
+                    }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
     }
 
     private fun showSettingsSheet() {
@@ -222,7 +264,8 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             // We use popBackStack to clear the history so "Back" doesn't return here
             parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, LoginFragment())
                 .commit()
 
@@ -237,13 +280,17 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
             adapter = recordsAdapter
         }
 
-        val observer = object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    _binding?.recyclerView?.scrollToPosition(0)
+        val observer =
+            object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(
+                    positionStart: Int,
+                    itemCount: Int,
+                ) {
+                    if (positionStart == 0) {
+                        _binding?.recyclerView?.scrollToPosition(0)
+                    }
                 }
             }
-        }
         scrollToTopObserver = observer
         recordsAdapter.registerAdapterDataObserver(observer)
     }
@@ -280,7 +327,7 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
                                     requireContext(),
                                     runningRecord.description,
                                     runningRecord.startTime,
-                                    runningRecord.key
+                                    runningRecord.key,
                                 )
                             } else {
                                 TimerNotificationManager.cancelTimerNotification(requireContext())
@@ -346,9 +393,11 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
     }
 
     private fun showDateRangePicker() {
-        val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Select Custom Range")
-            .build()
+        val picker =
+            MaterialDatePicker.Builder
+                .dateRangePicker()
+                .setTitleText("Select Custom Range")
+                .build()
 
         picker.addOnPositiveButtonClickListener { selection ->
             // Selection is Pair<Long, Long> in Milliseconds UTC
@@ -374,13 +423,14 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
 
     private fun calculateInitialDelayForSundayEvening(): Long {
         val now = Calendar.getInstance()
-        val nextSunday = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-            set(Calendar.HOUR_OF_DAY, 20)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
+        val nextSunday =
+            Calendar.getInstance().apply {
+                set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+                set(Calendar.HOUR_OF_DAY, 20)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
 
         if (now.after(nextSunday)) {
             nextSunday.add(Calendar.DAY_OF_MONTH, 7)
@@ -393,38 +443,43 @@ class RecordsListFragment : Fragment(R.layout.fragment_records_list) {
         val workManager = WorkManager.getInstance(requireContext())
 
         // Define Constraints (We need network to check the API)
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
         // Define the Request (Run every 1 hour)
-        val zombieRequest = PeriodicWorkRequestBuilder<ZombieCheckWorker>(1, TimeUnit.HOURS)
-            .setConstraints(constraints)
-            .build()
+        val zombieRequest =
+            PeriodicWorkRequestBuilder<ZombieCheckWorker>(1, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build()
 
         // Enqueue Unique Work
         workManager.enqueueUniquePeriodicWork(
             "ZombieCheck",
             ExistingPeriodicWorkPolicy.KEEP,
-            zombieRequest
+            zombieRequest,
         )
-        
+
         val initialDelay = calculateInitialDelayForSundayEvening()
         val weeklySummaryFlexIntervalHours = 4L
 
         // Define the Weekly Summary Request (Run every 7 days within a Sunday evening window)
-        val weeklySummaryRequest = PeriodicWorkRequestBuilder<WeeklySummaryWorker>(
-            7, TimeUnit.DAYS,
-            weeklySummaryFlexIntervalHours, TimeUnit.HOURS
-        )
-            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-            .setConstraints(constraints)
-            .build()
+        val weeklySummaryRequest =
+            PeriodicWorkRequestBuilder<WeeklySummaryWorker>(
+                7,
+                TimeUnit.DAYS,
+                weeklySummaryFlexIntervalHours,
+                TimeUnit.HOURS,
+            ).setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .setConstraints(constraints)
+                .build()
 
         workManager.enqueueUniquePeriodicWork(
             "WeeklySummary",
             ExistingPeriodicWorkPolicy.KEEP,
-            weeklySummaryRequest
+            weeklySummaryRequest,
         )
     }
 }
